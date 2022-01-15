@@ -1,0 +1,16 @@
+ABC command line: "lsv_or_bidec".
+
+PO M[0] support partition: 1
+20100000000
+PO M[1] support partition: 1
+20010000000
+PO M[2] support partition: 1
+20001000000
+PO M[3] support partition: 1
+211111022
+PO E[0] support partition: 1
+21000000202
+PO E[1] support partition: 1
+22000100022
+PO E[2] support partition: 1
+222221222

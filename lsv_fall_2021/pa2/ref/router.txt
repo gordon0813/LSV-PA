@@ -1,0 +1,36 @@
+ABC command line: "lsv_pa2_checker lsv_fall_2021/pa2/out/router.txt".
+
+PO outport[0]: correct answer.
+211111111011111111111111111111: valid decomposition!
+PO outport[1]: correct answer.
+200000000001000000000000000001000000000000000000000000000000: valid decomposition!
+PO outport[2]: correct answer.
+000000000000000000000000000000211111111000000000000000000000: valid decomposition!
+PO outport[3]: correct answer.
+PO outport[4]: correct answer.
+PO outport[5]: correct answer.
+PO outport[6]: correct answer.
+PO outport[7]: correct answer.
+PO outport[8]: correct answer.
+PO outport[9]: correct answer.
+PO outport[10]: correct answer.
+PO outport[11]: correct answer.
+PO outport[12]: correct answer.
+PO outport[13]: correct answer.
+PO outport[14]: correct answer.
+PO outport[15]: correct answer.
+PO outport[16]: correct answer.
+PO outport[17]: correct answer.
+PO outport[18]: correct answer.
+PO outport[19]: correct answer.
+PO outport[20]: correct answer.
+PO outport[21]: correct answer.
+PO outport[22]: correct answer.
+PO outport[23]: correct answer.
+PO outport[24]: correct answer.
+PO outport[25]: correct answer.
+PO outport[26]: correct answer.
+PO outport[27]: correct answer.
+PO outport[28]: correct answer.
+PO outport[29]: correct answer.
+Pass!

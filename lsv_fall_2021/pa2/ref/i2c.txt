@@ -1,0 +1,247 @@
+ABC command line: "lsv_pa2_checker lsv_fall_2021/pa2/out/i2c.txt".
+
+PO po000: correct answer.
+PO po001: correct answer.
+PO po002: correct answer.
+PO po003: correct answer.
+PO po004: correct answer.
+PO po005: correct answer.
+PO po006: correct answer.
+PO po007: correct answer.
+PO po008: correct answer.
+PO po009: correct answer.
+PO po010: correct answer.
+PO po011: correct answer.
+PO po012: correct answer.
+PO po013: correct answer.
+PO po014: correct answer.
+PO po015: correct answer.
+2122222222222222222222: valid decomposition!
+PO po016: correct answer.
+212222222222222222222: valid decomposition!
+PO po017: correct answer.
+PO po018: correct answer.
+21222222222222222202020: valid decomposition!
+PO po019: correct answer.
+PO po020: correct answer.
+PO po021: correct answer.
+PO po022: correct answer.
+PO po023: correct answer.
+PO po024: correct answer.
+PO po025: correct answer.
+PO po026: correct answer.
+PO po027: correct answer.
+PO po028: correct answer.
+PO po029: correct answer.
+PO po030: correct answer.
+201000000000000010000: valid decomposition!
+PO po031: correct answer.
+PO po032: correct answer.
+PO po033: correct answer.
+PO po034: correct answer.
+PO po035: correct answer.
+200000000000000010000: valid decomposition!
+PO po036: correct answer.
+PO po037: correct answer.
+PO po038: correct answer.
+2100: valid decomposition!
+PO po039: correct answer.
+210000000000000010000: valid decomposition!
+PO po040: correct answer.
+02001000002222200: valid decomposition!
+PO po041: correct answer.
+00021200022220: valid decomposition!
+PO po042: correct answer.
+000212000222220: valid decomposition!
+PO po043: correct answer.
+00021110002222200: valid decomposition!
+PO po044: correct answer.
+00020000100020: valid decomposition!
+PO po045: correct answer.
+212000: valid decomposition!
+PO po046: correct answer.
+211000: valid decomposition!
+PO po047: correct answer.
+211000: valid decomposition!
+PO po048: correct answer.
+211000: valid decomposition!
+PO po049: correct answer.
+211000: valid decomposition!
+PO po050: correct answer.
+211000: valid decomposition!
+PO po051: correct answer.
+211000: valid decomposition!
+PO po052: correct answer.
+211000: valid decomposition!
+PO po053: correct answer.
+210000000000000010000: valid decomposition!
+PO po054: correct answer.
+222120: valid decomposition!
+PO po055: correct answer.
+212220202022222200000: valid decomposition!
+PO po056: correct answer.
+212200002020222000000: valid decomposition!
+PO po057: correct answer.
+212222202022222200000: valid decomposition!
+PO po058: correct answer.
+210000000000000000000: valid decomposition!
+PO po059: correct answer.
+212222222022222200000: valid decomposition!
+PO po060: correct answer.
+212200000000002000000: valid decomposition!
+PO po061: correct answer.
+210000000000000000000: valid decomposition!
+PO po062: correct answer.
+211100000010011010000: valid decomposition!
+PO po063: correct answer.
+212200000020002000000: valid decomposition!
+PO po064: correct answer.
+210000000000000000000: valid decomposition!
+PO po065: correct answer.
+210000000000000010000: valid decomposition!
+PO po066: correct answer.
+2120: valid decomposition!
+PO po067: correct answer.
+20100: valid decomposition!
+PO po068: correct answer.
+0000002202210: valid decomposition!
+PO po069: correct answer.
+22222222222222221002: valid decomposition!
+PO po070: correct answer.
+PO po071: correct answer.
+0002000100: valid decomposition!
+PO po072: correct answer.
+0000201000: valid decomposition!
+PO po073: correct answer.
+PO po074: correct answer.
+00000200100020: valid decomposition!
+PO po075: correct answer.
+2001: valid decomposition!
+PO po076: correct answer.
+PO po077: correct answer.
+212222222: valid decomposition!
+PO po078: correct answer.
+212222222: valid decomposition!
+PO po079: correct answer.
+212222222: valid decomposition!
+PO po080: correct answer.
+212222222: valid decomposition!
+PO po081: correct answer.
+212222222: valid decomposition!
+PO po082: correct answer.
+212222222: valid decomposition!
+PO po083: correct answer.
+212222222: valid decomposition!
+PO po084: correct answer.
+212222222: valid decomposition!
+PO po085: correct answer.
+212222222: valid decomposition!
+PO po086: correct answer.
+212222222: valid decomposition!
+PO po087: correct answer.
+212222222: valid decomposition!
+PO po088: correct answer.
+212222222: valid decomposition!
+PO po089: correct answer.
+212222222: valid decomposition!
+PO po090: correct answer.
+212222222: valid decomposition!
+PO po091: correct answer.
+212222222: valid decomposition!
+PO po092: correct answer.
+212222222: valid decomposition!
+PO po093: correct answer.
+200000001: valid decomposition!
+PO po094: correct answer.
+200000001: valid decomposition!
+PO po095: correct answer.
+200000001: valid decomposition!
+PO po096: correct answer.
+200000001: valid decomposition!
+PO po097: correct answer.
+200000001: valid decomposition!
+PO po098: correct answer.
+2111222000: valid decomposition!
+PO po099: correct answer.
+200000001: valid decomposition!
+PO po100: correct answer.
+0000002012020: valid decomposition!
+PO po101: correct answer.
+200000001: valid decomposition!
+PO po102: correct answer.
+200000001: valid decomposition!
+PO po103: correct answer.
+200000001: valid decomposition!
+PO po104: correct answer.
+200000001: valid decomposition!
+PO po105: correct answer.
+200000001: valid decomposition!
+PO po106: correct answer.
+200000001: valid decomposition!
+PO po107: correct answer.
+200000001: valid decomposition!
+PO po108: correct answer.
+200000001: valid decomposition!
+PO po109: correct answer.
+0200000001: valid decomposition!
+PO po110: correct answer.
+210200000001: valid decomposition!
+PO po111: correct answer.
+210200000001: valid decomposition!
+PO po112: correct answer.
+210200000001: valid decomposition!
+PO po113: correct answer.
+200000001: valid decomposition!
+PO po114: correct answer.
+200000001: valid decomposition!
+PO po115: correct answer.
+210200000001: valid decomposition!
+PO po116: correct answer.
+2111222000: valid decomposition!
+PO po117: correct answer.
+211222000: valid decomposition!
+PO po118: correct answer.
+211222000: valid decomposition!
+PO po119: correct answer.
+211222000: valid decomposition!
+PO po120: correct answer.
+2111222000: valid decomposition!
+PO po121: correct answer.
+022220222210: valid decomposition!
+PO po122: correct answer.
+2111122000: valid decomposition!
+PO po123: correct answer.
+2111222000: valid decomposition!
+PO po124: correct answer.
+00021200: valid decomposition!
+PO po125: correct answer.
+PO po126: correct answer.
+0200000001: valid decomposition!
+PO po127: correct answer.
+0200000001: valid decomposition!
+PO po128: correct answer.
+021020: valid decomposition!
+PO po129: correct answer.
+21: valid decomposition!
+PO po130: correct answer.
+0200000001: valid decomposition!
+PO po131: correct answer.
+0212200: valid decomposition!
+PO po132: correct answer.
+21: valid decomposition!
+PO po133: correct answer.
+2220210: valid decomposition!
+PO po134: correct answer.
+210: valid decomposition!
+PO po135: correct answer.
+21020: valid decomposition!
+PO po136: correct answer.
+PO po137: correct answer.
+21: valid decomposition!
+PO po138: correct answer.
+21: valid decomposition!
+PO po139: correct answer.
+PO po140: correct answer.
+2110: valid decomposition!
+PO po141: correct answer.
+Pass!

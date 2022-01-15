@@ -1,0 +1,38 @@
+ABC command line: "lsv_pa2_checker lsv_fall_2021/pa2/out/ctrl.txt".
+
+PO sel_reg_dst[0]: correct answer.
+21000: valid decomposition!
+PO sel_reg_dst[1]: correct answer.
+PO sel_alu_opB[0]: correct answer.
+PO sel_alu_opB[1]: correct answer.
+20010: valid decomposition!
+PO alu_op[0]: correct answer.
+2000001: valid decomposition!
+PO alu_op[1]: correct answer.
+00021: valid decomposition!
+PO alu_op[2]: correct answer.
+22100: valid decomposition!
+PO alu_op_ext[0]: correct answer.
+PO alu_op_ext[1]: correct answer.
+PO alu_op_ext[2]: correct answer.
+PO alu_op_ext[3]: correct answer.
+21000: valid decomposition!
+PO halt: correct answer.
+PO reg_write: correct answer.
+21000: valid decomposition!
+PO sel_pc_opA: correct answer.
+PO sel_pc_opB: correct answer.
+PO beqz: correct answer.
+PO bnez: correct answer.
+PO bgez: correct answer.
+PO bltz: correct answer.
+PO jump: correct answer.
+PO Cin: correct answer.
+000021: valid decomposition!
+PO invA: correct answer.
+PO invB: correct answer.
+0000211: valid decomposition!
+PO sign: correct answer.
+PO mem_write: correct answer.
+PO sel_wb: correct answer.
+Pass!

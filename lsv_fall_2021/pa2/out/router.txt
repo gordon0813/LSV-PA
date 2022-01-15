@@ -1,0 +1,35 @@
+ABC command line: "lsv_or_bidec".
+
+PO outport[0] support partition: 1
+211111111011111111111111111111
+PO outport[1] support partition: 1
+200000000001000000000000000001000000000000000000000000000000
+PO outport[2] support partition: 1
+000000000000000000000000000000211111111000000000000000000000
+PO outport[3] support partition: 0
+PO outport[4] support partition: 0
+PO outport[5] support partition: 0
+PO outport[6] support partition: 0
+PO outport[7] support partition: 0
+PO outport[8] support partition: 0
+PO outport[9] support partition: 0
+PO outport[10] support partition: 0
+PO outport[11] support partition: 0
+PO outport[12] support partition: 0
+PO outport[13] support partition: 0
+PO outport[14] support partition: 0
+PO outport[15] support partition: 0
+PO outport[16] support partition: 0
+PO outport[17] support partition: 0
+PO outport[18] support partition: 0
+PO outport[19] support partition: 0
+PO outport[20] support partition: 0
+PO outport[21] support partition: 0
+PO outport[22] support partition: 0
+PO outport[23] support partition: 0
+PO outport[24] support partition: 0
+PO outport[25] support partition: 0
+PO outport[26] support partition: 0
+PO outport[27] support partition: 0
+PO outport[28] support partition: 0
+PO outport[29] support partition: 0

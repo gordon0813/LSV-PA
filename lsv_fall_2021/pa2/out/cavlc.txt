@@ -1,0 +1,15 @@
+ABC command line: "lsv_or_bidec".
+
+PO coeff_token[0] support partition: 0
+PO coeff_token[1] support partition: 0
+PO coeff_token[2] support partition: 0
+PO coeff_token[3] support partition: 0
+PO coeff_token[4] support partition: 0
+PO coeff_token[5] support partition: 0
+PO ctoken_len[0] support partition: 0
+PO ctoken_len[1] support partition: 1
+2000100000
+PO ctoken_len[2] support partition: 1
+0002000100
+PO ctoken_len[3] support partition: 0
+PO ctoken_len[4] support partition: 0

@@ -1,0 +1,246 @@
+ABC command line: "lsv_or_bidec".
+
+PO po000 support partition: 0
+PO po001 support partition: 0
+PO po002 support partition: 0
+PO po003 support partition: 0
+PO po004 support partition: 0
+PO po005 support partition: 0
+PO po006 support partition: 0
+PO po007 support partition: 0
+PO po008 support partition: 0
+PO po009 support partition: 0
+PO po010 support partition: 0
+PO po011 support partition: 0
+PO po012 support partition: 0
+PO po013 support partition: 0
+PO po014 support partition: 0
+PO po015 support partition: 1
+2122222222222222222222
+PO po016 support partition: 1
+212222222222222222222
+PO po017 support partition: 0
+PO po018 support partition: 1
+21222222222222222202020
+PO po019 support partition: 0
+PO po020 support partition: 0
+PO po021 support partition: 0
+PO po022 support partition: 0
+PO po023 support partition: 0
+PO po024 support partition: 0
+PO po025 support partition: 0
+PO po026 support partition: 0
+PO po027 support partition: 0
+PO po028 support partition: 0
+PO po029 support partition: 0
+PO po030 support partition: 1
+201000000000000010000
+PO po031 support partition: 0
+PO po032 support partition: 0
+PO po033 support partition: 0
+PO po034 support partition: 0
+PO po035 support partition: 1
+200000000000000010000
+PO po036 support partition: 0
+PO po037 support partition: 0
+PO po038 support partition: 1
+2100
+PO po039 support partition: 1
+210000000000000010000
+PO po040 support partition: 1
+02001000002222200
+PO po041 support partition: 1
+00021200022220
+PO po042 support partition: 1
+000212000222220
+PO po043 support partition: 1
+00021110002222200
+PO po044 support partition: 1
+00020000100020
+PO po045 support partition: 1
+212000
+PO po046 support partition: 1
+211000
+PO po047 support partition: 1
+211000
+PO po048 support partition: 1
+211000
+PO po049 support partition: 1
+211000
+PO po050 support partition: 1
+211000
+PO po051 support partition: 1
+211000
+PO po052 support partition: 1
+211000
+PO po053 support partition: 1
+210000000000000010000
+PO po054 support partition: 1
+222120
+PO po055 support partition: 1
+212220202022222200000
+PO po056 support partition: 1
+212200002020222000000
+PO po057 support partition: 1
+212222202022222200000
+PO po058 support partition: 1
+210000000000000000000
+PO po059 support partition: 1
+212222222022222200000
+PO po060 support partition: 1
+212200000000002000000
+PO po061 support partition: 1
+210000000000000000000
+PO po062 support partition: 1
+211100000010011010000
+PO po063 support partition: 1
+212200000020002000000
+PO po064 support partition: 1
+210000000000000000000
+PO po065 support partition: 1
+210000000000000010000
+PO po066 support partition: 1
+2120
+PO po067 support partition: 1
+20100
+PO po068 support partition: 1
+0000002202210
+PO po069 support partition: 1
+22222222222222221002
+PO po070 support partition: 0
+PO po071 support partition: 1
+0002000100
+PO po072 support partition: 1
+0000201000
+PO po073 support partition: 0
+PO po074 support partition: 1
+00000200100020
+PO po075 support partition: 1
+2001
+PO po076 support partition: 0
+PO po077 support partition: 1
+212222222
+PO po078 support partition: 1
+212222222
+PO po079 support partition: 1
+212222222
+PO po080 support partition: 1
+212222222
+PO po081 support partition: 1
+212222222
+PO po082 support partition: 1
+212222222
+PO po083 support partition: 1
+212222222
+PO po084 support partition: 1
+212222222
+PO po085 support partition: 1
+212222222
+PO po086 support partition: 1
+212222222
+PO po087 support partition: 1
+212222222
+PO po088 support partition: 1
+212222222
+PO po089 support partition: 1
+212222222
+PO po090 support partition: 1
+212222222
+PO po091 support partition: 1
+212222222
+PO po092 support partition: 1
+212222222
+PO po093 support partition: 1
+200000001
+PO po094 support partition: 1
+200000001
+PO po095 support partition: 1
+200000001
+PO po096 support partition: 1
+200000001
+PO po097 support partition: 1
+200000001
+PO po098 support partition: 1
+2111222000
+PO po099 support partition: 1
+200000001
+PO po100 support partition: 1
+0000002012020
+PO po101 support partition: 1
+200000001
+PO po102 support partition: 1
+200000001
+PO po103 support partition: 1
+200000001
+PO po104 support partition: 1
+200000001
+PO po105 support partition: 1
+200000001
+PO po106 support partition: 1
+200000001
+PO po107 support partition: 1
+200000001
+PO po108 support partition: 1
+200000001
+PO po109 support partition: 1
+0200000001
+PO po110 support partition: 1
+210200000001
+PO po111 support partition: 1
+210200000001
+PO po112 support partition: 1
+210200000001
+PO po113 support partition: 1
+200000001
+PO po114 support partition: 1
+200000001
+PO po115 support partition: 1
+210200000001
+PO po116 support partition: 1
+2111222000
+PO po117 support partition: 1
+211222000
+PO po118 support partition: 1
+211222000
+PO po119 support partition: 1
+211222000
+PO po120 support partition: 1
+2111222000
+PO po121 support partition: 1
+022220222210
+PO po122 support partition: 1
+2111122000
+PO po123 support partition: 1
+2111222000
+PO po124 support partition: 1
+00021200
+PO po125 support partition: 0
+PO po126 support partition: 1
+0200000001
+PO po127 support partition: 1
+0200000001
+PO po128 support partition: 1
+021020
+PO po129 support partition: 1
+21
+PO po130 support partition: 1
+0200000001
+PO po131 support partition: 1
+0212200
+PO po132 support partition: 1
+21
+PO po133 support partition: 1
+2220210
+PO po134 support partition: 1
+210
+PO po135 support partition: 1
+21020
+PO po136 support partition: 0
+PO po137 support partition: 1
+21
+PO po138 support partition: 1
+21
+PO po139 support partition: 0
+PO po140 support partition: 1
+2110
+PO po141 support partition: 0
