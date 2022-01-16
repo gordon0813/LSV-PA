@@ -1,3 +1,4 @@
-read ../benchmarks-master/arithmetic/self_test1.v
+read /Users/gordon/Documents/GitHub/benchmarks-master/random_control/cavlc.v
 strash
 lsv_sat_NodeSweep
+#
