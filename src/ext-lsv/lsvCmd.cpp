@@ -547,7 +547,7 @@ public:
   // set aig manager, some initialization
   FinalManager(Aig_Man_t*);
 
-  void setTargetNode(int);// TODO
+  void setTargetNode(int ,int);// TODO
 
   // get a u, if no more u, u.status = -1
   u_pair getCandidates() {next_u(); return u;}
@@ -562,7 +562,7 @@ public:
 FinalManager::FinalManager(Aig_Man_t* pMan_in)
 {
   level = 3;
-  init_pat_len = 3200;
+  init_pat_len = 32000;
   seed = 69420;
   pat_unit_bit_len = sizeof(pat_unit) * 8;
   ua_index = 0;
@@ -572,18 +572,21 @@ FinalManager::FinalManager(Aig_Man_t* pMan_in)
   // srand(time(NULL));
 }
 
-void FinalManager::setTargetNode(int v_id_in) {
+void FinalManager::setTargetNode(int v_id_in ,int modify) {
   v_id = v_id_in;
 
   // new pat: sim->odc->collect u
   // new pat(partial): sim(partial)->odc(partial)->collect u(all)
   // new v: mark TFO->sim->odc->collect u
 
-  std::cout << "generating pattern..." << std::endl;
-  gen_pat();
+  //std::cout << "generating pattern..." << std::endl;
+  if(modify){
+    gen_pat();
   //std::cout << "...done" << std::endl;
   //std::cout << "simulating..." << std::endl;
-  sim_init();
+    sim_init();
+  }
+  
   //std::cout << "...done" << std::endl;
   //Aig_ManFanoutStart(pMan);
   //std::cout << "TFO of v init..." << std::endl;
@@ -596,14 +599,15 @@ void FinalManager::setTargetNode(int v_id_in) {
   //std::cout << "calculating u set..." << std::endl;
   collect_u();
   //std::cout << "...done" << std::endl;
+  /*
   std::cout << "finding u pairs..." << std::endl;
   int p;
   for (p = 0; p < 999; p++) {
     if (!next_u()) {
       break;
     }
-  }
-  std::cout << "...done, total " << p << " pairs" << std::endl;
+  }*/
+  //std::cout << "...done, total " << u_id_list.size() << " u" << std::endl;
   // std::cout << "simulating..." << std::endl;
   // sim_set_range(20, 51);
   // sim_init();
@@ -635,11 +639,11 @@ void FinalManager::mark_TFO_of_v(Aig_Obj_t* v) {
 void FinalManager::cal_odc_init()
 {
   v_odc = cal_odc(v_id, v_id, level);
-  std::cout << "odc of v: ";
+  //std::cout << "odc of v: ";
   for (int p = 0; p < (((pat_len - 1) / pat_unit_bit_len) + 1); p++) {
     //std::cout << std::bitset<sizeof(pat_unit)*8>(v_odc[p]);
   }
-  std::cout << std::endl;
+  //std::cout << std::endl;
 }
 
 std::vector<pat_unit> FinalManager::cal_odc(int x_id, int v_id, int k)
@@ -737,7 +741,7 @@ void FinalManager::sim_init()
 {
   Aig_Obj_t *pCI, *pCO;
   int i;
-  std::cout<<"that is"<<Aig_ManObjNumMax(pMan)<<std::endl;
+  //std::cout<<"that is"<<Aig_ManObjNumMax(pMan)<<std::endl;
   visited.resize(Aig_ManObjNumMax(pMan));
   std::vector<bool> temp(pat_len);
   node_sim_value.resize(Aig_ManObjNumMax(pMan));
@@ -856,7 +860,7 @@ void FinalManager::collect_u() {
       u_comp_list.push_back(comp); 
     }
   }
-
+  //std::cout<<"u size :"<<u_id_list.size()<<std::endl;
   for (int p = 0; p < u_id_list.size(); p++) {
    // std::cout << "u[" << p << "]->id: " << u_id_list[p] << ", comp: " << u_comp_list[p] << std::endl;
   }
@@ -1030,7 +1034,7 @@ int Lsv_CommandTest(Abc_Frame_t* pAbc, int argc, char** argv) {
   v_id = 36;
 
   fm = FinalManager(pAig);
-  fm.setTargetNode(v_id);
+  fm.setTargetNode(v_id,1);
 
   // pat_append.resize(6);
   // for (i = 0; i < 6; i++) {
@@ -1189,11 +1193,13 @@ int translate_up(u_pair up, int & id1 ,int & id2, int &c1,int & c2,int & cc){
 }
 
 
-int sweep_one_node(Aig_Man_t *pMan,int id,FinalManager & fm){
+int sweep_one_node(Aig_Man_t *pMan,int id,FinalManager & fm  ,int aiglevel,std::vector<std::vector<bool> > &cec_list){
   int level=3;
   int ifan,k;
+  int resimcount=0;
+  int modify=0;
   std::vector<std::vector<Aig_Obj_t*> > fanout_side_free;
-  std::vector<std::vector<bool> > cec_list;
+  
   std::map<int,NodeInfo*> fanout_info;
   //Cnf_Dat_t *netCnf;
   std::vector<int> id2var;
@@ -1245,14 +1251,16 @@ int sweep_one_node(Aig_Man_t *pMan,int id,FinalManager & fm){
  int id1=4,id2=3;
  int style=1;
  int ando, andi1, andi2;
- for(int ii=0;ii<30;ii++){
+ for(int ii=0;ii<110;ii++){
   
   u_pair up= fm.getCandidates();
 
-  printf("candidate: %d %d %d %d %d \n",up.ua_id,up.ua_cp,up.ub_id,up.ub_cp,up.status);
-  //translate u_pair
+ // printf("candidate: %d %d %d %d %d left num: %d  level %d\n",up.ua_id,up.ua_cp,up.ub_id,up.ub_cp,up.status 
+  //,Aig_ManObjNum(pMan),aiglevel);
+  //translate u_pairs
   style=translate_up(up,id1,id2,c1,c2,cc);
-  if(style==0){std::cout<<"not found \n" ;break;}
+  if(style==0){//std::cout<<"not found \n" ;
+  break;}
   //if(style==1)continue;
   
   u1=Aig_ManObj(pMan,id1);
@@ -1269,55 +1277,58 @@ int sweep_one_node(Aig_Man_t *pMan,int id,FinalManager & fm){
   sat_solver_add_and(solver,ando,andi1,andi2,c1,c2,cc);
   //get candidates ,add candidates cnf
   int assump=sat_solver_addvar(solver);
-  printf("xor: %d %d %d \n",assump,ando,id2var[targetNode->Id]);
+  //printf("xor: %d %d %d \n",assump,ando,id2var[targetNode->Id]);
   sat_solver_add_xor(solver,assump,ando,id2var[targetNode->Id],0);
   //solve
   assumptions[0]=toLitCond(assump,0);
   int result=sat_solver_solve(solver,assumptions,assumptions+1,0,0,0,0);
   //feed back counter examples or undate circuit
-  printf("=========result : %d======\n",result);
+ // printf("=========result : %d=== left=== %d  style: %d\n",result,Aig_ManObjNum(pMan),style);
  // Sat_SolverPrintStats( stdout, solver );
-  for(int i=0;i<id2var.size();i++){
-    if(id2var[i]!=-1){
-      //sat_solver_get_var_value
-     // printf("id:%d var:%d\n",i,sat_user_values(solver,id2var[i]));
-    }
-  }
+  
   //start  replace
   Aig_Obj_t* newgate;
-
+  if(aiglevel==0 && style!=1){//std::cout<<"break\n"; 
+   break;}
   if(result==-1){
     //continue;
+    
     if(style==1){
       //continue;
       std::cout<<"replace by :"<<id1<<" c "<<c1<<"\n";
       newgate=Aig_ManObj(pMan,id1);
       newgate=(c1)?Aig_Not(newgate):newgate;
-    }else if(true){
-      continue;
     }
     else if(up.status==1 ||up.status==3){ //and
       u1=(up.ua_cp)?Aig_Not(u1):u1;
       u2=(up.ub_cp)?Aig_Not(u2):u2;
       newgate=Aig_And(pMan,u1,u2);
+      std::cout<<"replace by :"<<id1<<"  "<<id2<<"\n";
     }else if(up.status==2){//or
       u1=(up.ua_cp)?Aig_Not(u1):u1;
       u2=(up.ub_cp)?Aig_Not(u2):u2;
       newgate=Aig_Or(pMan,u1,u2);
+      std::cout<<"replace by :"<<id1<<"  "<<id2<<"\n";
     } 
     if(targetNode!=newgate){
+      modify=1;
       Aig_ObjReplace(pMan,targetNode,newgate,0);
     }
     
     Aig_ManCleanup(pMan);
     break;
   }else{
+    resimcount++;
     Aig_ManForEachCi(pMan,tmpnode,tmpi){
       //cec_list.push_back(std::vector<bool>());
       cec_list[tmpi].push_back(( sat_user_values(solver,id2var[tmpnode->Id]) ==0)?false:true);
     }
-    std::cout<<"========resim=============="<<std::endl;
-    //fm.resim(cec_list);
+    if(resimcount>9){
+     // std::cout<<"========resim=========="<<std::endl;
+     // fm.resim(cec_list);
+      resimcount=0;
+    }
+    
   }
 
 
@@ -1328,7 +1339,7 @@ int sweep_one_node(Aig_Man_t *pMan,int id,FinalManager & fm){
   //printf("obs:%d var:%d\n",28,sat_solver_get_var_value(solver,28));
   //printf("obs:%d var:%d\n",29,sat_solver_get_var_value(solver,29));
   //printf("obs:%d var:%d\n",24,sat_solver_get_var_value(solver,24));
-return 0;
+return modify;
 
 }
 void dfsprint(Aig_Man_t *pMan){
@@ -1356,6 +1367,7 @@ int randomselect(Aig_Man_t *pMan,std::vector<Aig_Obj_t*> & vneed,int reset){
   int newrand;
   int reid;
   if(!reset){
+    if(vneed.size()<=2)return -1;
     newrand=rand();
     newrand=newrand%(vneed.size());
     reid=vneed[newrand]->Id;
@@ -1383,54 +1395,44 @@ int randomselect(Aig_Man_t *pMan,std::vector<Aig_Obj_t*> & vneed,int reset){
 void lsv_SatNodeSweep(Abc_Ntk_t*  pNtk){
   std::vector<Aig_Obj_t*> vneed;
   std::vector<int> leftnum;
+  std::vector<std::vector<bool> > cec_list;
   FinalManager fm(NULL);
   Aig_Man_t *pMan;
   int needreset=1;
   pMan=Abc_NtkToDar(pNtk,0,0);
   Aig_ManFanoutStart(pMan);
   fm=FinalManager(pMan);
-  int targetid;
+  int targetid=0;
   int oneitnum;
+  int level=0;
+  int modify=1;
+  oneitnum=Aig_ManObjNum(pMan);
+  leftnum.push_back(oneitnum);
   for (int it=0;it<10;it++){
-    oneitnum=Aig_ManObjNum(pMan);
-    leftnum.push_back(oneitnum);
+    
+    
     std::cout<<"======iter======="<<it<<"===num==="<<oneitnum<<"==========="<<"\n\n\n";
     for (int k=0;k<oneitnum;k++){
-      targetid=randomselect(pMan,vneed,needreset);
+      targetid=randomselect(pMan,vneed,modify);
+      if(targetid==-1){targetid=randomselect(pMan,vneed,1);}
   //targetid=10;
-      std::cout<<"\nselect:"<<targetid<<"  need num :"<<vneed.size()<<"\n";
-      fm.setTargetNode(targetid);
+      //std::cout<<"\nselect:"<<targetid<<"  aig num :"<<vneed.size()<<"\n";
+      fm.setTargetNode(targetid,modify);
+      //if(modify==1)modify==0;
      // if(fm.u_state()==-1)continue;
-      sweep_one_node(pMan,targetid,fm);
+      modify=sweep_one_node(pMan,targetid,fm,level,cec_list);
     }
+    if(targetid==-1)break;
+    if(it>10)level=1;
+    oneitnum=Aig_ManObjNum(pMan);
+    leftnum.push_back(oneitnum);
   }
+  
   std::cout<<"======final =====\n";
  for(int i=0;i<leftnum.size();i++){
    std::cout<<i<<" "<<leftnum[i]<<std::endl;
  }
   
-  /*
-  //dfsprint(pMan);
-  targetid=randomselect(pMan,vneed,needreset);
-  //targetid=9;
-  std::cout<<"\nselect:"<<targetid<<"  need num :"<<vneed.size()<<"\n";
-  fm.setTargetNode(targetid);
-  sweep_one_node(pMan,targetid,fm);
-  //dfsprint(pMan);
-  targetid=randomselect(pMan,vneed,needreset);
-  std::cout<<"\nselect:"<<targetid<<"  need num :"<<vneed.size()<<"\n";
-  fm.setTargetNode(targetid);
-  
-  sweep_one_node(pMan,targetid,fm);
-  //dfsprint(pMan);
-  printf("============\n");
-  //fm.setTargetNode(9);
-  //sweep_one_node(pMan,9,fm);
-  //sweep_one_node(pMan,12,0,9,1,10,1);
-  //sweep_one_node(pMan,11);
-  printf("============\n");
-  //sweep_one_node(pMan,10);
-*/
 
 
 }
