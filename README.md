@@ -55,7 +55,7 @@ how to run our code  :
 you could refer to ./script_test.sh
 read design first ,than strash 
 finally run our commend:
-lsv_sat_NodeSweep  <startit> <endit>
+lsv_sat_NodeSweep  [startit] [endit]
 startit is when we start level 1 sweep
 endit is when we end level 1 sweep
 other iteration would use level 0 sweep
