@@ -45,7 +45,7 @@ Submission period:
 Topic: OR Bi-Decomposition of Functions 
 
 Submission period: 2021/12/24 11:00-13:00 
-### [final project]
+### [final project](./script_test.sh)
 Topic: aig minimization with ODC
 
 to complie our code :
