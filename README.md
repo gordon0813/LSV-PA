@@ -53,15 +53,22 @@ make
 
 how to run our code  :
 you could refer to ./script_test.sh
+
 read design first ,than strash 
+
 finally run our commend:
-lsv_sat_NodeSweep  [startit] [endit]
+
+lsv_sat_NodeSweep  startit endit
+
 startit is when we start level 1 sweep
+
 endit is when we end level 1 sweep
+
 other iteration would use level 0 sweep
+
 notic that  0 <startit < endit < 30
 
-Submission period: 2021/12/24 11:00-13:00 
+
 
 #### Evaluation
 For PA1 and PA2, your submissions will be evaluated over [The EPFL Combinational Benchmark Suite](https://www.epfl.ch/labs/lsi/page-102566-en-html/benchmarks/).
