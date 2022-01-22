@@ -3,6 +3,7 @@
 #include <map>
 #include <iostream>
 #include <bitset>
+#include <ctime>
 #include "base/abc/abc.h"
 #include "base/main/main.h"
 #include "base/main/mainInt.h"
@@ -501,7 +502,7 @@ private:
   int seed;
   int pat_unit_bit_len;
 
-  std::vector<int> u_id_list;
+  
   std::vector<bool> u_comp_list;
 
   std::vector<std::vector<pat_unit> > node_sim_value;
@@ -544,6 +545,7 @@ private:
   bool next_u();
 
 public:
+  std::vector<int> u_id_list;
   // set aig manager, some initialization
   FinalManager(Aig_Man_t*);
 
@@ -562,7 +564,7 @@ public:
 FinalManager::FinalManager(Aig_Man_t* pMan_in)
 {
   level = 3;
-  init_pat_len = 32000;
+  init_pat_len = 3200;
   seed = 69420;
   pat_unit_bit_len = sizeof(pat_unit) * 8;
   ua_index = 0;
@@ -1191,7 +1193,18 @@ int translate_up(u_pair up, int & id1 ,int & id2, int &c1,int & c2,int & cc){
  
   
 }
-
+int randomReplace(std::vector<std::vector<bool> > &cec_list,int maxnum){
+  assert(cec_list.size()>0);
+  //int s=cec_list.size()-1;
+  int newrand=rand()%(cec_list[0].size());
+  while(cec_list[0].size()>maxnum){
+    for(int i=0;i<cec_list.size();i++){
+      cec_list[i][newrand]=cec_list[i].back();
+      cec_list[i].pop_back();
+    }
+  }
+  return newrand;
+}
 
 int sweep_one_node(Aig_Man_t *pMan,int id,FinalManager & fm  ,int aiglevel,std::vector<std::vector<bool> > &cec_list){
   int level=3;
@@ -1231,10 +1244,7 @@ int sweep_one_node(Aig_Man_t *pMan,int id,FinalManager & fm  ,int aiglevel,std::
       }
     }
   }
-  Aig_ManForEachCi(pMan,tmpnode,tmpi){
-    cec_list.push_back(std::vector<bool>());
-    cec_list[tmpi].push_back(false);
-  }
+  
 
   /*
   for(int i=0;i<16;i++){
@@ -1251,7 +1261,8 @@ int sweep_one_node(Aig_Man_t *pMan,int id,FinalManager & fm  ,int aiglevel,std::
  int id1=4,id2=3;
  int style=1;
  int ando, andi1, andi2;
- for(int ii=0;ii<110;ii++){
+ int ii=0;
+ for(ii=0;ii<310;ii++){
   
   u_pair up= fm.getCandidates();
 
@@ -1294,8 +1305,8 @@ int sweep_one_node(Aig_Man_t *pMan,int id,FinalManager & fm  ,int aiglevel,std::
     //continue;
     
     if(style==1){
-      //continue;
-      std::cout<<"replace by :"<<id1<<" c "<<c1<<"\n";
+      if(aiglevel==1)continue;
+      std::cout<<"replace "<<targetNode->Id<<"by :"<<id1<<" c "<<c1<<"\n";
       newgate=Aig_ManObj(pMan,id1);
       newgate=(c1)?Aig_Not(newgate):newgate;
     }
@@ -1303,12 +1314,12 @@ int sweep_one_node(Aig_Man_t *pMan,int id,FinalManager & fm  ,int aiglevel,std::
       u1=(up.ua_cp)?Aig_Not(u1):u1;
       u2=(up.ub_cp)?Aig_Not(u2):u2;
       newgate=Aig_And(pMan,u1,u2);
-      std::cout<<"replace by :"<<id1<<"  "<<id2<<"\n";
+      std::cout<<"replace "<<targetNode->Id<<"by :"<<id1<<"  "<<id2<<"\n";
     }else if(up.status==2){//or
       u1=(up.ua_cp)?Aig_Not(u1):u1;
       u2=(up.ub_cp)?Aig_Not(u2):u2;
       newgate=Aig_Or(pMan,u1,u2);
-      std::cout<<"replace by :"<<id1<<"  "<<id2<<"\n";
+      std::cout<<"replace "<<targetNode->Id<<"by :"<<id1<<"  "<<id2<<"\n";
     } 
     if(targetNode!=newgate){
       modify=1;
@@ -1339,6 +1350,9 @@ int sweep_one_node(Aig_Man_t *pMan,int id,FinalManager & fm  ,int aiglevel,std::
   //printf("obs:%d var:%d\n",28,sat_solver_get_var_value(solver,28));
   //printf("obs:%d var:%d\n",29,sat_solver_get_var_value(solver,29));
   //printf("obs:%d var:%d\n",24,sat_solver_get_var_value(solver,24));
+
+//std::cout<<"usize "<<fm.u_id_list.size()<<" candidates: "<<ii<<"\n";
+//std::cout<<"ce list lenth "<<cec_list[0].size()<<"\n";
 return modify;
 
 }
@@ -1392,68 +1406,95 @@ int randomselect(Aig_Man_t *pMan,std::vector<Aig_Obj_t*> & vneed,int reset){
 
 
 }
-void lsv_SatNodeSweep(Abc_Ntk_t*  pNtk){
+void lsv_SatNodeSweep(Abc_Ntk_t*  pNtk,int startpoint,int endpoint){
   std::vector<Aig_Obj_t*> vneed;
   std::vector<int> leftnum;
+  int counter=0 ,modifycounter=0;
   std::vector<std::vector<bool> > cec_list;
   FinalManager fm(NULL);
   Aig_Man_t *pMan;
+  Aig_Obj_t* tmpnode;
+  clock_t time_req;
+   int tmpi;
   int needreset=1;
   pMan=Abc_NtkToDar(pNtk,0,0);
   Aig_ManFanoutStart(pMan);
   fm=FinalManager(pMan);
+  Aig_ManForEachCi(pMan,tmpnode,tmpi){
+    cec_list.push_back(std::vector<bool>());
+    cec_list[tmpi].push_back(false);
+  }
   int targetid=0;
   int oneitnum;
   int level=0;
   int modify=1;
-  oneitnum=Aig_ManObjNum(pMan);
-  leftnum.push_back(oneitnum);
-  for (int it=0;it<10;it++){
+  oneitnum=Aig_ManObjNum(pMan)/3;
+  leftnum.push_back(Aig_ManObjNum(pMan));
+  time_req = clock();
+  for (int it=0;it<30;it++){
+     if(it>=startpoint && it<=endpoint)level=1;
+     else level=0;
+     if(startpoint==-1)level=(it%3>0);
     
-    
-    std::cout<<"======iter======="<<it<<"===num==="<<oneitnum<<"==========="<<"\n\n\n";
+    std::cout<<"======iter======="<<it<<"===num==="<<Aig_ManObjNum(pMan)<<"==========="<<"\n\n\n";
     for (int k=0;k<oneitnum;k++){
       targetid=randomselect(pMan,vneed,modify);
       if(targetid==-1){targetid=randomselect(pMan,vneed,1);}
   //targetid=10;
       //std::cout<<"\nselect:"<<targetid<<"  aig num :"<<vneed.size()<<"\n";
+      
       fm.setTargetNode(targetid,modify);
+      if(modify){
+        fm.resim(cec_list);
+        modifycounter++;
+      }
+   // std::cout<<"after sim:"<<clock()-time_req<<"u size:"<<fm.u_id_list.size()<<"\n";
       //if(modify==1)modify==0;
      // if(fm.u_state()==-1)continue;
+     counter++;
+   // std::cout<<"count:"<<counter<<" modify :"<<modifycounter<<"cec: "<<cec_list.size() <<"\n";
+     //fm.resim(cec_list);
+     //time_req = clock();
       modify=sweep_one_node(pMan,targetid,fm,level,cec_list);
+      randomReplace(cec_list,30000);
+     // std::cout<<"after formal:"<<clock()-time_req<<"\n";
     }
     if(targetid==-1)break;
-    if(it>10)level=1;
-    oneitnum=Aig_ManObjNum(pMan);
-    leftnum.push_back(oneitnum);
+
+   
+    oneitnum=Aig_ManObjNum(pMan)/3;
+    leftnum.push_back(Aig_ManObjNum(pMan));
   }
+
   
   std::cout<<"======final =====\n";
+  std::cout<<"time used per iteration:"<<((clock()-time_req) /30)/1000<<"ms"<<"\n";
  for(int i=0;i<leftnum.size();i++){
    std::cout<<i<<" "<<leftnum[i]<<std::endl;
  }
   
-
-
 }
 
 int Lsv_CommandSatNodeSweep(Abc_Frame_t* pAbc, int argc, char** argv){
   Abc_Ntk_t* pNtk = Abc_FrameReadNtk(pAbc);
   int c;
+  int startp=0;
+  int endp=10;
   Extra_UtilGetoptReset();
-  while ((c = Extra_UtilGetopt(argc, argv, "h")) != EOF) {
-    switch (c) {
-      case 'h':
-        goto usage;
-      default:
-        goto usage;
-    }
+  
+  if(argc==3){
+    startp=atoi(argv[1]);
+    endp=atoi(argv[2]);
+    std::cout<<"start level 1 sweep from iter: "<<startp<<" until iter:"<<endp<<"\n";
+  }else{
+    std::cout<<"not corrcet input default value used "<<"\n";
   }
+
   if (!pNtk) {
     Abc_Print(-1, "Empty network.\n");
     return 1;
   }
-  lsv_SatNodeSweep(pNtk);
+  lsv_SatNodeSweep(pNtk,startp,endp);
   return 0;
 
 usage:
