@@ -57,7 +57,7 @@ you could refer to ./script_test.sh
 
 read design first ,than strash 
 
-finally run our commend:
+finally run our command:
 
 lsv_sat_NodeSweep  startit endit
 
