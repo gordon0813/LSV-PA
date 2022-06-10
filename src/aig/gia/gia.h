@@ -484,8 +484,8 @@ static inline void         Gia_ObjSetValue( Gia_Obj_t * pObj, int i )          {
 static inline int          Gia_ObjPhase( Gia_Obj_t * pObj )                    { return pObj->fPhase;                                        }
 static inline int          Gia_ObjPhaseReal( Gia_Obj_t * pObj )                { return Gia_Regular(pObj)->fPhase ^ Gia_IsComplement(pObj);  }
 static inline int          Gia_ObjPhaseDiff( Gia_Man_t * p, int i, int k )     { return Gia_ManObj(p, i)->fPhase ^ Gia_ManObj(p, k)->fPhase; }
-static inline char *       Gia_ObjCiName( Gia_Man_t * p, int i )               { return p->vNamesIn   ? (char*)Vec_PtrEntry(p->vNamesIn, i)   : NULL; }
-static inline char *       Gia_ObjCoName( Gia_Man_t * p, int i )               { return p->vNamesOut  ? (char*)Vec_PtrEntry(p->vNamesOut, i)  : NULL; }
+static inline char *       Gia_ObjCiName( Gia_Man_t * p, int i )               { return p->vNamesIn   ? (char*)Vec_PtrEntry(p->vNamesIn, i)   : NULL; } // cada
+static inline char *       Gia_ObjCoName( Gia_Man_t * p, int i )               { return p->vNamesOut  ? (char*)Vec_PtrEntry(p->vNamesOut, i)  : NULL; } // cada
 static inline char *       Gia_ObjName( Gia_Man_t * p, int i )                 { return p->vNamesNode ? (char*)Vec_PtrEntry(p->vNamesNode, i) : NULL; }
 static inline char *       Gia_ObjNameObj( Gia_Man_t * p, Gia_Obj_t * pObj )   { return p->vNamesNode ? (char*)Vec_PtrEntry(p->vNamesNode, Gia_ObjId(p, pObj)) : NULL; }
 

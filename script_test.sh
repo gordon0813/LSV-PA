@@ -1,6 +1,11 @@
-read /Users/gordon/Documents/GitHub/benchmarks-master/random_control/voter.v
+read /Users/gordon/Documents/Lab/oss-cad-suite/examples/verilog/synth2o.v
 strash
-lsv_sat_NodeSweep    10 30
+show
+&get
+lsv_print_nodes
+&fadds -v -n -a -f -x
+&fadds -h
+
 #/Users/gordon/Documents/GitHub/benchmarks-master/random_control/ctrl.v
 #0 30 136  :  0 20  98     :10  30  129   : 30 30 130    time used per iteration:19ms
 #/Users/gordon/Documents/GitHub/benchmarks-master/random_control/router.v
