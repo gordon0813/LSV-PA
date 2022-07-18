@@ -164,17 +164,23 @@ int Collection::createFaninWords(vector<string> namecis)
 }
 //for test01
 int Collection::simAndMatch(){
+    //initialize
     for(int i=0;i<allwords.size();i++){
         allwords[i]->check();
        allwords[i]->set2Incut();
     }
+    // create arthmetic module
     Word* ab= allwords[0]->add(allwords[1]);
     Word* abc= ab->add(allwords[2]);
+    // random assign all pi simvalue
     randomCi();
+    // sim all circuit
     simall();
-    //ab->getsimValue();
+    //collect the word level simulate value
     abc->getsimValue();
+    //show how we match gia to word info (need modify to hash match version)
     for(int i=0;i<ninfos.size();i++){
+        // for example a+b+c [2] could be matched by following constrain
         if(ninfos[i]->simValue==abc->simvalue(2)||ninfos[i]->simValue==~abc->simvalue(2)){
             cout<<"match: n"<<i<<endl;
         }
@@ -219,7 +225,7 @@ int simpleAddsimModule(const vector<uint> &a,const vector<uint> &b,vector<uint> 
             c[k]=(c[k]>>1)+ (((sc>>k)%2)<<31);
         }
     }
-
+//cout------------
     for(int k=0;k<a.size();k++){
         bitset<32> xa(a[k]);
         cout<<"a:"<<xa<<endl;
@@ -232,6 +238,7 @@ int simpleAddsimModule(const vector<uint> &a,const vector<uint> &b,vector<uint> 
         bitset<32> xc(c[k]);
         cout<<"c:"<<xc<<endl;
     }
+//------------
     return 0;
 }
 vector<uint> Word::getsimValue(){
@@ -246,6 +253,14 @@ vector<uint> Word::getsimValue(){
         a=input[0]->getsimValue();
         b=input[1]->getsimValue();
         simpleAddsimModule(a,b,simvalues);
+    }else if(type.compare("-")==0){//c=a-b
+        //todo
+    }else if(type.compare("*")==0){//c=a*b
+
+    }else if(type.compare("neg")==0){ // a'=-a
+
+    }else if(type.compare("^")==0){//c=a^b
+
     }
     return simvalues;
 }

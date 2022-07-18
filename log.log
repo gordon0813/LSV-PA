@@ -334,7 +334,7 @@ Dumping module `\top'.
 
 End of script. Logfile hash: b66cd3f985, CPU: user 0.08s system 0.02s
 Yosys 0.14+51 (git sha1 a41c1df76, x86_64-apple-darwin20.2-clang 10.0.0-4ubuntu1 -fPIC -Os)
-Time spent: 50% 1x abc (0 sec), 12% 3x read_verilog (0 sec), ...
+Time spent: 50% 1x abc (0 sec), 10% 3x read_verilog (0 sec), ...
 ABC command line: "source ./script_test.sh".
 
 Object Id = 17, name = n17
