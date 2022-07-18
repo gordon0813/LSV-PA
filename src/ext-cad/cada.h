@@ -103,6 +103,7 @@ class Word{
     Word(int nbits);
     int addbit(NodeInfo* ni,int nthbit);
     int check();
+    //need some rule to check c's bits number (+1 bits is safe but may redundent)
     Word* add(Word* b){
         Word* c=new Word(max(word.size(),b->word.size())+1);
         c->type="+"; c->input.push_back(this) ; c->input.push_back(b) ; 

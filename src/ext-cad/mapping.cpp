@@ -197,6 +197,8 @@ Word::Word(int nbits){
     }
 }
 //what if word size > 64 ? (crash)
+//this template can be used to handle c= a+b
+//but may be able to handle  a-b,a*b once we change the add function
 int simpleAddsimModule(const vector<uint> &a,const vector<uint> &b,vector<uint> &c ){
     size_t sa=0;
     size_t sb=0;
@@ -216,7 +218,7 @@ int simpleAddsimModule(const vector<uint> &a,const vector<uint> &b,vector<uint> 
             sb=sb<<1;
             sb+=((b[k]>>i) %2);
         }
-        //add function------
+        //add function------(try to change to -/*/<</>> to create more usage)
         sc=sa+sb;
         cout<<sa<<" "<<sb<<" "<<sc<<endl;
         
@@ -260,6 +262,8 @@ vector<uint> Word::getsimValue(){
     }else if(type.compare("neg")==0){ // a'=-a
 
     }else if(type.compare("^")==0){//c=a^b
+
+    }else if(type.compare("<<")==0){
 
     }
     return simvalues;
