@@ -53,6 +53,7 @@ int Lsv_CommandPrintNodes(Abc_Frame_t* pAbc, int argc, char** argv) {
   Collection a=Collection(pAbc->pGia);
   Lsv_NtkPrintNodes(pNtk,namesci);
   a.createFaninWords(namesci);
+  a.simAndMatch();
   //a.incut( );
  // a.detectXor();
   a.showInfo("test.dot");

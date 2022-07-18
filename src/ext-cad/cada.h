@@ -72,7 +72,7 @@ public:
         else if(simvalueSave[0]==~simvalueSave[1]&&simvalueSave[2]==simvalueSave[3])return 1;
         else return 0;
     }
-    int simValue;
+    uint simValue;
     vector<int> inxor;
     vector<int> outxor;
     //static int markc;
@@ -81,7 +81,7 @@ public:
     size_t travelmark;
     short iscut;
 private:
-    vector<int>simvalueSave;
+    vector<uint>simvalueSave;
     //int simvalueSave;
     short fix;
     
@@ -99,19 +99,30 @@ private:
  
 class Word{
     public:
+    Word(){iscut=0;};
+    Word(int nbits);
     int addbit(NodeInfo* ni,int nthbit);
+    int check();
     Word* add(Word* b){
-        Word* c=new Word();
+        Word* c=new Word(max(word.size(),b->word.size())+1);
         c->type="+"; c->input.push_back(this) ; c->input.push_back(b) ; 
+        return c;
     };//example return  c=a+b
     int simModule();//simulation by word level info (get info from fanin matched gate ,if input not matched yet ,recur call)
+    int set2Incut();
+    vector<uint> getsimValue();
+    uint simvalue(int nthbits){return simvalues[nthbits];}
     private:
+    
+    
     vector<NodeInfo*> word; // link to real gia circuit(Nodeinfo contant gia simvalue ,gia id ,xor or other info) ,if not yet matched :nullptr
     vector<bool>isinv;   // link to  gia but maybe inverse
-    vector<int>simvalues;// formal/guess simulation value
+    vector<uint>simvalues;// formal/guess simulation value
     string type; // "*"  or "&" or "==" or "+" .....
     vector<Word*>input;  // input = [wa ,wb] ,type= "+", means word=wa+wb 
+    size_t mark; //check if sim value is newest;
     short isconstant;// this is constant ? if yes simvalues will fix
+    short iscut;
 };
 class Collection
 {
@@ -135,8 +146,13 @@ public:
         }
     }
     void showInfo(std::string filename);
+    //beta test---------
     int detectXor();
     int createFaninWords(vector<string>namecis);
+    int simAndMatch();
+
+
+    //--------------------
     int randomCi(){
         Gia_Obj_t *pobj;
         int i;
@@ -216,6 +232,7 @@ public:
         }
         
         cout << endl;
+        return 0;
     }
     int carryChain(Gia_Obj_t *ia,Gia_Obj_t *ib,Gia_Obj_t *out){
          Gia_Obj_t *pobj;
@@ -274,7 +291,7 @@ public:
         }
         cout<<endl;
 
-        
+        return 0;
 
     }
     int xorChainAll()
