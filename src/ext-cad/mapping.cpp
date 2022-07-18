@@ -1,3 +1,4 @@
+#include <unordered_map>
 #include "ext-cad/cada.h"
 
 using namespace std;
@@ -23,10 +24,11 @@ int  Collection::detectXor(){
     }
 void Collection::showInfo(std::string filename){
 
-
-        xorChainAll();
+        
+       // xorChainAll();
         Gia_Obj_t * pobj;
         int i;
+       
         std::ofstream myfile;
         myfile.open(filename);
         myfile<<"digraph G1 {\n";
@@ -78,4 +80,45 @@ int  Collection::xorChain(){
      }
      ss<<"\"";
      return ss.str();
+ }
+
+ int simpleParsing(string in,string& out,int& i){
+     int start=in.find('[');
+     int end=in.find(']');
+     if (end>start+1&& start>0){
+         out=in.substr(0,start);
+         i=stoi(in.substr(start+1,end-start-1));
+     }else{
+         out=in;
+         i=-1;
+     }
+ }
+ int Word::addbit(NodeInfo* ni,int nthbit){
+     if(nthbit<word.size()){
+         while(word.size()<nthbit+1){
+             word.push_back(nullptr);
+         }
+     }
+    word[nthbit]=ni;
+ }
+ int Collection::createFaninWords(vector<string>namecis){
+     string pname;
+     int count;
+     unordered_map<string, Word*> name2word;
+     unordered_map<string,Word*>::iterator it;
+     for(int i=0;i<namecis.size();i++){
+         simpleParsing(namecis[i],pname,count);
+         if(count>=0)cout<<pname<<" "<<count<<endl;
+         else cout<<pname;
+         it=name2word.find(pname);
+         if(it==name2word.end()){
+             Word* w=new Word();
+             //todo: get gia ci info 
+             //w->addbit(ninfos[])
+             allwords.push_back();
+             allwords.back()
+         }else{
+
+         }
+     }
  }

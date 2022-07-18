@@ -11,7 +11,7 @@ struct PackageRegistrationManager {
 } lsvPackageRegistrationManager;
 
 
-void Lsv_NtkPrintNodes(Abc_Ntk_t*  pNtk) {
+void Lsv_NtkPrintNodes(Abc_Ntk_t*  pNtk ,vector<string>&cinames ) {
   Abc_Obj_t* pObj;
   int i;
   Abc_NtkForEachNode(pNtk, pObj, i) {
@@ -25,6 +25,10 @@ void Lsv_NtkPrintNodes(Abc_Ntk_t*  pNtk) {
     if (Abc_NtkHasSop(pNtk)) {
       printf("The SOP of this node:\n%s", (char*)pObj->pData);
     }
+  }
+  Abc_NtkForEachCi(pNtk, pObj, i){
+     printf("fanin Id = %d, name = %s\n", Abc_ObjId(pObj), Abc_ObjName(pObj));
+     cinames.push_back(string(Abc_ObjName(pObj)));
   }
   
 
@@ -44,9 +48,13 @@ int Lsv_CommandPrintNodes(Abc_Frame_t* pAbc, int argc, char** argv) {
     Abc_Print(-1, "Empty network.\n");
     return 1;
   }
-  Lsv_NtkPrintNodes(pNtk);
+  //Lsv_NtkPrintNodes(pNtk);
+  vector<string> namesci; 
   Collection a=Collection(pAbc->pGia);
-  a.detectXor();
+  Lsv_NtkPrintNodes(pNtk,namesci);
+  a.createFaninWords(namesci);
+  //a.incut( );
+ // a.detectXor();
   a.showInfo("test.dot");
   return 0;
 

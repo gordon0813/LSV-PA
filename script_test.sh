@@ -1,6 +1,6 @@
 read /Users/gordon/Documents/Lab/oss-cad-suite/examples/verilog/synth2o.v
 strash
-show
+#show
 &get
 lsv_print_nodes
 &fadds -v -n -a -f -x
