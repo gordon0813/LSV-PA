@@ -442,7 +442,6 @@ int Dtc_ManCompare2( int * pCut0, int * pCut1 )
 Vec_Int_t * Gia_ManDetectFullAdders( Gia_Man_t * p, int fVerbose, Vec_Int_t ** pvCutsXor2 )
 {
     Vec_Int_t * vCutsXor, * vCutsMaj, * vFadds;
-   // Gia_ManDetectHalfAdders(p,fVerbose);
     Dtc_ManComputeCuts( p, pvCutsXor2, &vCutsXor, &vCutsMaj, fVerbose );
     qsort( Vec_IntArray(vCutsXor), (size_t)(Vec_IntSize(vCutsXor)/4), 16, (int (*)(const void *, const void *))Dtc_ManCompare );
     qsort( Vec_IntArray(vCutsMaj), (size_t)(Vec_IntSize(vCutsMaj)/4), 16, (int (*)(const void *, const void *))Dtc_ManCompare );
@@ -820,9 +819,6 @@ Gia_Man_t * Gia_ManDupWithNaturalBoxes( Gia_Man_t * p, int nFaddMin, int fVerbos
     // detect FADDs
     vFadds = Gia_ManDetectFullAdders( p, fVerbose, NULL );
     assert( Vec_IntSize(vFadds) % 5 == 0 );
-    for (int ii=0;ii< Vec_IntSize(vFadds) ;ii+=5){
-        printf("%d %d %d %d %d ",vFadds[ii],vFadds[ii+1],vFadds[ii+2],vFadds[ii+3],vFadds[ii+4]);
-    }
     // map MAJ into its FADD
     vMap = Gia_ManCreateMap( p, vFadds );
     // for each FADD, find the longest chain and reorder its inputs

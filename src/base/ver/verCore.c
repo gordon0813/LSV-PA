@@ -1339,6 +1339,11 @@ int Ver_ParseGateStandard( Ver_Man_t * pMan, Abc_Ntk_t * pNtk, Ver_GateType_t Ga
         return 0;
     Ver_StreamMove( p );
 
+    // external added: get gate name
+    pWord = Ver_ParseGetName( pMan );
+    if ( pWord == NULL )
+        return 0;
+
     // this is gate name - throw it away
     if ( Ver_StreamPopChar(p) != '(' )
     {

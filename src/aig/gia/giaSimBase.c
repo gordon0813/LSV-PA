@@ -750,7 +750,7 @@ void Gia_ManSimProfile( Gia_Man_t * pGia )
     Vec_Wrd_t * vSims = Gia_ManSimPatSim( pGia );
     int nWords = Vec_WrdSize(vSims) / Gia_ManObjNum(pGia);
     int nC0s = 0, nC1s = 0, nUnique = Gia_ManSimPatHashPatterns( pGia, nWords, vSims, &nC0s, &nC1s );
-    printf( "Simulating %d patterns leads to %d unique objects (%.2f %% out of %d), Const0 = %d. Const1 = %d.\n", 
+    printf( "Simulating %d patterns leads to %d unique objects (%.2f %% out of %d). Const0 = %d. Const1 = %d.\n", 
         64*nWords, nUnique, 100.0*nUnique/Gia_ManCandNum(pGia), Gia_ManCandNum(pGia), nC0s, nC1s );
     Vec_WrdFree( vSims );
 }
@@ -2485,15 +2485,21 @@ void Gia_ManSimGen( Gia_Man_t * pGia )
   SeeAlso     []
 
 ***********************************************************************/
-int Gia_ManSimTwo( Gia_Man_t * p0, Gia_Man_t * p1, int nWords, int nRounds, int fVerbose )
+int Gia_ManSimTwo( Gia_Man_t * p0, Gia_Man_t * p1, int nWords, int nRounds, int TimeLimit, int fVerbose )
 {
     Vec_Wrd_t * vSim0, * vSim1, * vSim2;
     abctime clk = Abc_Clock();
     int n, i, RetValue = 1;
+    int TimeStop  = TimeLimit ? TimeLimit * CLOCKS_PER_SEC + Abc_Clock() : 0; // in CPU ticks
     printf( "Simulating %d round with %d machine words.\n", nRounds, nWords );
     Abc_RandomW(0);
     for ( n = 0; RetValue && n < nRounds; n++ )
     {
+        if ( TimeStop && Abc_Clock() > TimeStop )
+        {
+            printf( "Computation timed out after %d seconds and %d rounds.\n", TimeLimit, n );
+            break;
+        }
         vSim0 = Vec_WrdStartRandom( Gia_ManCiNum(p0) * nWords );
         p0->vSimsPi = vSim0;
         p1->vSimsPi = vSim0;
@@ -2698,6 +2704,77 @@ Vec_Ptr_t * Gia_ManPtrWrdReadBin( char * pFileName, int fVerbose )
     if ( fVerbose )
         printf( "Read %d arrays from file \"%s\".\n", Vec_PtrSize(p), pFileName );
     return p;
+}
+
+/**Function*************************************************************
+
+  Synopsis    []
+
+  Description []
+               
+  SideEffects []
+
+  SeeAlso     []
+
+***********************************************************************/
+void Gia_ManCompareSims( Gia_Man_t * pHie, Gia_Man_t * pFlat, int nWords, int fVerbose )
+{
+    abctime clk = Abc_Clock();
+    Vec_Wrd_t * vSims  = pFlat->vSimsPi = pHie->vSimsPi = Vec_WrdStartRandom( Gia_ManCiNum(pFlat) * nWords );
+    Vec_Wrd_t * vSims0 = Gia_ManSimPatSim( pFlat );
+    Vec_Wrd_t * vSims1 = Gia_ManSimPatSim( pHie );
+    Gia_Obj_t * pObj; int * pSpot, * pSpot2, i, nC0s = 0, nC1s = 0, nUnique = 0, nFound[3] = {0}, nBoundary = 0, nMatched = 0;
+    Vec_Mem_t * vStore = Vec_MemAlloc( nWords, 12 ); // 2^12 N-word entries per page
+    pFlat->vSimsPi = NULL;
+    pHie->vSimsPi = NULL;
+    Vec_WrdFree( vSims );
+
+    printf( "Comparing two AIGs using %d simulation words.\n", nWords );
+    printf( "Hierarchical: " ); Gia_ManPrintStats( pHie, NULL );
+    printf( "Flat:         " ); Gia_ManPrintStats( pFlat, NULL );
+
+    Vec_MemHashAlloc( vStore, 1 << 12 );
+    Gia_ManForEachCand( pFlat, pObj, i )
+    {
+        word * pSim = Vec_WrdEntryP(vSims0, i*nWords);
+        nC0s += Abc_TtIsConst0(pSim, nWords);
+        nC1s += Abc_TtIsConst1(pSim, nWords);
+        Vec_MemHashInsert( vStore, pSim );
+    }
+    nUnique = Vec_MemEntryNum( vStore );
+    printf( "Simulating %d patterns through the second (flat) AIG leads to %d unique objects (%.2f %% out of %d). Const0 = %d. Const1 = %d.\n", 
+        64*nWords, nUnique, 100.0*nUnique/Gia_ManCandNum(pFlat), Gia_ManCandNum(pFlat), nC0s, nC1s );
+
+    assert( Gia_ManCiNum(pFlat) == Gia_ManCiNum(pHie) );
+    Gia_ManForEachCand( pHie, pObj, i ) 
+    {
+        word * pSim = Vec_WrdEntryP(vSims1, i*nWords);
+        pSpot  = Vec_MemHashLookup( vStore, pSim );
+        Abc_TtNot( pSim, nWords );
+        pSpot2 = Vec_MemHashLookup( vStore, pSim );
+        Abc_TtNot( pSim, nWords );
+        nBoundary += Gia_ObjIsBuf(pObj);
+        if ( *pSpot != -1 || *pSpot2 != -1 )
+        {
+            nMatched++;
+            continue;
+        }
+        //Extra_PrintBinary( stdout, (unsigned *)pSim, 64*nWords ); printf("\n");
+        nFound[1] += Gia_ObjIsBuf(pObj);
+        nFound[2]++;
+        //if ( Gia_ObjIsBuf(pObj) )
+        //    printf( "%d(%d) ", i, nBoundary-1 );
+    }
+    Vec_MemHashFree( vStore );
+    Vec_MemFree( vStore );
+    Vec_WrdFree( vSims0 );
+    Vec_WrdFree( vSims1 );
+
+    printf( "The first (hierarchical) AIG has %d (%.2f %%) matches, %d (%.2f %%) mismatches, including %d (%.2f %%) on the boundary.  ", 
+        nMatched,  100.0*nMatched /Abc_MaxInt(1, Gia_ManCandNum(pHie)), 
+        nFound[2], 100.0*nFound[2]/Abc_MaxInt(1, Gia_ManCandNum(pHie)), 
+        nFound[1], 100.0*nFound[1]/Abc_MaxInt(1, nBoundary) );
+    Abc_PrintTime( 1, "Time", Abc_Clock() - clk );
 }
 
 ////////////////////////////////////////////////////////////////////////
