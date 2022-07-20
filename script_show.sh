@@ -1,7 +1,5 @@
-read /home/gordon1387/code/cadA2022/testcase/release/test01/top_primitive.v
-strash
-&get
-lsv_print_nodes
+./abc -f ./script_test.sh
+dot -Tpng test.dot > output.png
 
 
 #/Users/gordon/Documents/GitHub/benchmarks-master/random_control/ctrl.v

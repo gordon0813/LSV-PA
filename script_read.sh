@@ -1,4 +1,4 @@
-bench_dir="../ReverseSynthesis/release"
+bench_dir="/home/gordon1387/code/cadA2022/testcase/release"
 top="top_primitive.v"
 read_sh="script.read"
 

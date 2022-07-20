@@ -1,0 +1,4 @@
+read /home/gordon1387/code/cadA2022/testcase/release/test20/top_primitive.v 
+strash 
+&get 
+lsv_print_nodes

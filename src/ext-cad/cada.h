@@ -111,6 +111,8 @@ class Word{
     };//example return  c=a+b
     int simModule();//simulation by word level info (get info from fanin matched gate ,if input not matched yet ,recur call)
     int set2Incut();
+    void setName(string n){this->name=n;};
+    string functionStr();
     vector<uint> getsimValue();
     uint simvalue(int nthbits){return simvalues[nthbits];}
     private:
@@ -120,6 +122,7 @@ class Word{
     vector<bool>isinv;   // link to  gia but maybe inverse
     vector<uint>simvalues;// formal/guess simulation value
     string type; // "*"  or "&" or "==" or "+" .....
+    string name;
     vector<Word*>input;  // input = [wa ,wb] ,type= "+", means word=wa+wb 
     size_t mark; //check if sim value is newest;
     short isconstant;// this is constant ? if yes simvalues will fix

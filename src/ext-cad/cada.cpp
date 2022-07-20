@@ -14,6 +14,7 @@ struct PackageRegistrationManager {
 void Lsv_NtkPrintNodes(Abc_Ntk_t*  pNtk ,vector<string>&cinames ) {
   Abc_Obj_t* pObj;
   int i;
+  /**
   Abc_NtkForEachNode(pNtk, pObj, i) {
     printf("Object Id = %d, name = %s\n", Abc_ObjId(pObj), Abc_ObjName(pObj));
     Abc_Obj_t* pFanin;
@@ -25,7 +26,7 @@ void Lsv_NtkPrintNodes(Abc_Ntk_t*  pNtk ,vector<string>&cinames ) {
     if (Abc_NtkHasSop(pNtk)) {
       printf("The SOP of this node:\n%s", (char*)pObj->pData);
     }
-  }
+  }**/
   Abc_NtkForEachCi(pNtk, pObj, i){
      printf("fanin Id = %d, name = %s\n", Abc_ObjId(pObj), Abc_ObjName(pObj));
      cinames.push_back(string(Abc_ObjName(pObj)));

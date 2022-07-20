@@ -146,8 +146,8 @@ int Collection::createFaninWords(vector<string> namecis)
         if (it == name2word.end())
         {
             Word *w = new Word();
-            // todo: get gia ci info
-            // w->addbit(ninfos[])
+            w->setName(pname);
+
             w->addbit(pis[i],count);
             cout<<"id "<<pis[i]->nodeid()<<" "<<count<<endl;
             allwords.push_back(w);
@@ -170,20 +170,27 @@ int Collection::simAndMatch(){
        allwords[i]->set2Incut();
     }
     // create arthmetic module
-    Word* ab= allwords[0]->add(allwords[1]);
-    Word* abc= ab->add(allwords[2]);
+    Word* apb= allwords[0]->add(allwords[1]);
+    Word* apbpc= apb->add(allwords[2]);
     // random assign all pi simvalue
+
     randomCi();
     // sim all circuit
     simall();
     //collect the word level simulate value
-    abc->getsimValue();
+    apbpc->getsimValue();
+    vector< Word*> checkList;
+    checkList.push_back(apbpc);
     //show how we match gia to word info (need modify to hash match version)
     for(int i=0;i<ninfos.size();i++){
         // for example a+b+c [2] could be matched by following constrain
-        if(ninfos[i]->simValue==abc->simvalue(2)||ninfos[i]->simValue==~abc->simvalue(2)){
-            cout<<"match: n"<<i<<endl;
+        for(int j=0;j<checkList.size();j++){
+            if(ninfos[i]->simValue==checkList[j]->simvalue(2)||ninfos[i]->simValue==~checkList[j]->simvalue(2)){
+                cout<<checkList[j]->functionStr() <<" match: n"<<i<<endl;
+            }
+
         }
+        
     }
 
    return 0;
@@ -285,4 +292,17 @@ int Word::check(){
         simvalues.resize(word.size());
     }
     return 0;
+}
+string Word::functionStr(){
+   string a;
+   string b;
+   if(input.size()>0){
+       a=input[0]->functionStr();
+   }else{
+       return name;
+   }
+   if(input.size()>1){
+       b=input[1]->functionStr();
+   }
+   return "("+a+type+b+")";
 }
