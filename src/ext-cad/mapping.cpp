@@ -171,6 +171,8 @@ int Collection::simAndMatch(){
     }
     // create arthmetic module
     Word* apb= allwords[0]->add(allwords[1]);
+    Word* bpc= allwords[1]->add(allwords[2]);
+    Word* apc= allwords[0]->add(allwords[2]);
     Word* apbpc= apb->add(allwords[2]);
     // random assign all pi simvalue
 
@@ -178,19 +180,64 @@ int Collection::simAndMatch(){
     // sim all circuit
     simall();
     //collect the word level simulate value
+    apb->getsimValue();
+    bpc->getsimValue();
+    apc->getsimValue();
     apbpc->getsimValue();
     vector< Word*> checkList;
+    checkList.push_back(apb);
+    checkList.push_back(bpc);
+    checkList.push_back(apc);
     checkList.push_back(apbpc);
     //show how we match gia to word info (need modify to hash match version)
+    unordered_map<uint,vector<NodeInfo*>> hashsimmap;
+    unordered_map<uint, vector<NodeInfo*>>::iterator it;
     for(int i=0;i<ninfos.size();i++){
         // for example a+b+c [2] could be matched by following constrain
-        for(int j=0;j<checkList.size();j++){
+        uint simv=ninfos[i]->simValue;
+        it=hashsimmap.find(simv);
+        if(it==hashsimmap.end()){
+            vector<NodeInfo*> tmp;
+            tmp.push_back(ninfos[i]);
+            hashsimmap.insert(pair<uint,vector<NodeInfo*>>(simv,tmp));
+        }else{
+            it->second.push_back(ninfos[i]);
+        }
+        /**
+        it=hashsimmap.find(~simv);
+        if(it==hashsimmap.end()){
+            vector<NodeInfo*> tmp;
+            tmp.push_back(ninfos[i]);
+            hashsimmap.insert(pair<uint,vector<NodeInfo*>>(~simv,tmp));
+        }else{
+            it->second.push_back(ninfos[i]);
+        }
+    
+         for(int j=0;j<checkList.size();j++){
+        
             if(ninfos[i]->simValue==checkList[j]->simvalue(2)||ninfos[i]->simValue==~checkList[j]->simvalue(2)){
-                cout<<checkList[j]->functionStr() <<" match: n"<<i<<endl;
+               // cout<<checkList[j]->functionStr() <<" match: n"<<i<<endl;
             }
 
-        }
-        
+        }**/
+    }
+   for(int i=0;i<checkList.size();i++){
+            for(int j=0;j<checkList[i]->nbits();j++){
+                it=hashsimmap.find(checkList[i]->simvalue(j));
+                if(it!=hashsimmap.end()){
+                    for(int k=0;k<it->second.size();k++){
+                        cout<<checkList[i]->functionStr()<<" "<<j<<"th bit"<<" match: n"<<(it->second)[k]->nodeid()<<endl;
+                    }
+                    
+                }
+                it=hashsimmap.find(~checkList[i]->simvalue(j));
+                if(it!=hashsimmap.end()){
+                    for(int k=0;k<it->second.size();k++){
+                        cout<<checkList[i]->functionStr()<<" "<<j<<"th bit"<<" match: !n"<<(it->second)[k]->nodeid()<<endl;
+                    }
+                    
+                }
+            }
     }
 
    return 0;

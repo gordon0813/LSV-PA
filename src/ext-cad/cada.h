@@ -114,6 +114,7 @@ class Word{
     void setName(string n){this->name=n;};
     string functionStr();
     vector<uint> getsimValue();
+    int nbits(){return word.size();}
     uint simvalue(int nthbits){return simvalues[nthbits];}
     private:
     
