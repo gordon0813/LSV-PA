@@ -109,6 +109,7 @@ class Word{
         c->type="+"; c->input.push_back(this) ; c->input.push_back(b) ; 
         return c;
     };//example return  c=a+b
+    Word* mult(Word* b);
     int simModule();//simulation by word level info (get info from fanin matched gate ,if input not matched yet ,recur call)
     int set2Incut();
     void setName(string n){this->name=n;};

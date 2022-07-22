@@ -162,6 +162,11 @@ int Collection::createFaninWords(vector<string> namecis)
     return 0;
 
 }
+Word* Word::mult(Word*b){
+    Word* c=new Word(word.size()+b->word.size()+1);
+        c->type="*"; c->input.push_back(this) ; c->input.push_back(b) ; 
+    return c;
+}
 //for test01
 int Collection::simAndMatch(){
     //initialize
@@ -171,9 +176,11 @@ int Collection::simAndMatch(){
     }
     // create arthmetic module
     Word* apb= allwords[0]->add(allwords[1]);
+    Word* amb= allwords[0]->mult(allwords[1]);
     Word* bpc= allwords[1]->add(allwords[2]);
     Word* apc= allwords[0]->add(allwords[2]);
     Word* apbpc= apb->add(allwords[2]);
+    Word* ambpc= amb->add(allwords[2]);
     // random assign all pi simvalue
 
     randomCi();
@@ -181,14 +188,17 @@ int Collection::simAndMatch(){
     simall();
     //collect the word level simulate value
     apb->getsimValue();
+    amb->getsimValue();
     bpc->getsimValue();
     apc->getsimValue();
     apbpc->getsimValue();
+    ambpc->getsimValue();
     vector< Word*> checkList;
     checkList.push_back(apb);
     checkList.push_back(bpc);
     checkList.push_back(apc);
     checkList.push_back(apbpc);
+    checkList.push_back(ambpc);
     //show how we match gia to word info (need modify to hash match version)
     unordered_map<uint,vector<NodeInfo*>> hashsimmap;
     unordered_map<uint, vector<NodeInfo*>>::iterator it;
@@ -203,23 +213,7 @@ int Collection::simAndMatch(){
         }else{
             it->second.push_back(ninfos[i]);
         }
-        /**
-        it=hashsimmap.find(~simv);
-        if(it==hashsimmap.end()){
-            vector<NodeInfo*> tmp;
-            tmp.push_back(ninfos[i]);
-            hashsimmap.insert(pair<uint,vector<NodeInfo*>>(~simv,tmp));
-        }else{
-            it->second.push_back(ninfos[i]);
-        }
-    
-         for(int j=0;j<checkList.size();j++){
-        
-            if(ninfos[i]->simValue==checkList[j]->simvalue(2)||ninfos[i]->simValue==~checkList[j]->simvalue(2)){
-               // cout<<checkList[j]->functionStr() <<" match: n"<<i<<endl;
-            }
-
-        }**/
+//        it=hashsimmap.find(~simv);
     }
    for(int i=0;i<checkList.size();i++){
             for(int j=0;j<checkList[i]->nbits();j++){
@@ -297,6 +291,49 @@ int simpleAddsimModule(const vector<uint> &a,const vector<uint> &b,vector<uint> 
 //------------
     return 0;
 }
+int simpleMultsimModule(const vector<uint> &a,const vector<uint> &b,vector<uint> &c , bool inv=0){
+    size_t sa=0;
+    size_t sb=0;
+    size_t sc=0;
+    vector<int>tmp;     
+           // cout <<Gia_ObjId(giacir,pobj)<<" "<< x <<endl;
+    for(int i=0;i<32;i++){
+        sa=0;sb=0;
+        for(int k=a.size()-1;k>=0;k--){
+            
+            sa=sa<<1;
+            sa+=((a[k]>>i) %2);
+        }
+        for(int k=b.size()-1;k>=0;k--){
+            sb=sb<<1;
+            sb+=((b[k]>>i) %2);
+        }
+        //add function------(try to change to -/*/<</>> to create more usage)
+        sc=sa*sb;
+        cout<<sa<<" "<<sb<<" "<<sc<<endl;
+        
+        //------------------
+        for(int k=0;k<c.size();k++){
+            c[k]=(c[k]>>1)+ (((sc>>k)%2)<<31);
+        }
+    }
+    //cout------------
+    for(int k=0;k<a.size();k++){
+        bitset<32> xa(a[k]);
+        cout<<"a:"<<xa<<endl;
+    }
+    for(int k=0;k<b.size();k++){
+        bitset<32> xb(b[k]);
+        cout<<"b:"<<xb<<endl;
+    }
+    for(int k=0;k<c.size();k++){
+        bitset<32> xc(c[k]);
+        cout<<"c:"<<xc<<endl;
+    }
+//------------
+
+    return 0;
+}
 vector<uint> Word::getsimValue(){
     //vector<int>re;
     vector<uint> a;
@@ -314,6 +351,9 @@ vector<uint> Word::getsimValue(){
         b=input[1]->getsimValue();
         simpleAddsimModule(a,b,simvalues, 1);
     }else if(type.compare("*")==0){//c=a*b
+        a=input[0]->getsimValue();
+        b=input[1]->getsimValue();
+        simpleMultsimModule(a,b,simvalues,0);
         //todo
     }else if(type.compare("neg")==0){ // a'=-a
 
