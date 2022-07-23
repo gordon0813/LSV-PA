@@ -1,5 +1,5 @@
 ./abc -f ./script_test.sh
-dot -Tpng test.dot > output.png
+#dot -Tpng test.dot > output.png
 
 
 #/Users/gordon/Documents/GitHub/benchmarks-master/random_control/ctrl.v

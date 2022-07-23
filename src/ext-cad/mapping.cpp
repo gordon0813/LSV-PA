@@ -162,43 +162,144 @@ int Collection::createFaninWords(vector<string> namecis)
     return 0;
 
 }
+int Collection::createFanoutWords(vector<string>namecos){
+    string pname;
+    int count;
+    Gia_Obj_t *pobj;
+    int i;
+    unordered_map<string, Word *> name2word;
+    unordered_map<string, Word *>::iterator it;
+    vector<NodeInfo*>pis;
+    Gia_ManForEachCo(giacir,pobj,i){
+        pis.push_back(getInfo(pobj));
+    }
+    for (int i = 0; i < namecos.size(); i++)
+    {
+        simpleParsing(namecos[i], pname, count);
+        if (count >= 0)
+            cout << pname << " " << count << endl;
+        else
+            cout << pname;
+        it = name2word.find(pname);
+        if(count==-1)continue;
+        if (it == name2word.end())
+        {
+            Word *w = new Word();
+            w->setName(pname);
+
+            w->addbit(pis[i],count);
+            cout<<"id "<<pis[i]->nodeid()<<" "<<count<<endl;
+            allCOwords.push_back(w);
+            name2word.insert(pair<string,Word*>(pname,w));
+        }
+        else
+        {
+            cout<<"id "<<pis[i]->nodeid()<<" "<<count<<endl;
+            it->second->addbit(pis[i],count);
+        }
+    }
+    return 0;
+}
+
+Word* Word::sub(Word*b){
+     Word* c=new Word(max(word.size(),b->word.size())+1);
+    c->type="-"; c->input.push_back(this) ; c->input.push_back(b) ; 
+    return c;
+}
 Word* Word::mult(Word*b){
     Word* c=new Word(word.size()+b->word.size()+1);
         c->type="*"; c->input.push_back(this) ; c->input.push_back(b) ; 
     return c;
 }
+vector<Word*> Collection::allWordModules(const vector<Word*>&as,const vector<Word*>&bs,int samelevel){
+    vector<Word*>re;
+    for(int i=0;i<as.size();i++){
+        for(int j=0;j<bs.size();j++){
+            if(samelevel&&i==j)continue;
+            re.push_back(as[i]->add(bs[j]));
+            cout<<re.back()->functionStr()<<endl;
+            re.push_back(as[i]->sub(bs[j]));
+            cout<<re.back()->functionStr()<<endl;
+            re.push_back(as[i]->mult(bs[j]));
+            cout<<re.back()->functionStr()<<endl;
+        }
+    }
+    return re;
+}
+double Word::match(Word* bigger){
+    //int maxmatch=0;
+    int nowmatch=0;
+    for(int i=0;i<min(simvalues.size(),bigger->simvalues.size());i++){
+        if(bigger->simvalues[i]==simvalues[i])nowmatch++;
+    }
+    return  double(nowmatch)/simvalues.size();
+}
 //for test01
 int Collection::simAndMatch(){
     //initialize
     for(int i=0;i<allwords.size();i++){
-        allwords[i]->check();
+       allwords[i]->check();
        allwords[i]->set2Incut();
     }
+    for(int i=0;i<allCOwords.size();i++){
+       allCOwords[i]->check();
+       allCOwords[i]->set2Incut();
+    }
+    vector<vector<Word*>>nlevelWord;
+    nlevelWord.push_back(allwords);
+    int limitdepth=4;
+    vector<Word*>onelevel;
+    vector<Word*>onetmp;
+    for(int i=1;i<min(int(allwords.size()),limitdepth);i++){
+        //nlevelWord.push_back(vector<Word*>());
+        onelevel.clear();
+        cout<<"i"<<i<<endl;
+        for(int j=0;j<=i-1;j++){
+            onetmp=allWordModules(nlevelWord[j],nlevelWord[i-j-1],j==i-j-1);
+            for(int k=0;k<onetmp.size();k++)onelevel.push_back(onetmp[k]);
+           // onelevel.insert(onelevel.end(),onetmp.begin(),onetmp.end());
+            //onetmp=allWordModules(nlevelWord[j],nlevelWord[i-j-1],j==i-j-1);
+        }
+        nlevelWord.push_back(onelevel);
+        
+    }
+    //return 0;
     // create arthmetic module
+    /**
     Word* apb= allwords[0]->add(allwords[1]);
     Word* amb= allwords[0]->mult(allwords[1]);
     Word* bpc= allwords[1]->add(allwords[2]);
     Word* apc= allwords[0]->add(allwords[2]);
     Word* apbpc= apb->add(allwords[2]);
     Word* ambpc= amb->add(allwords[2]);
+**/
+    vector< Word*> checkList;
+    for(int i=0;i<nlevelWord.size();i++){
+        for(int j=0;j<nlevelWord[i].size();j++){
+            checkList.push_back(nlevelWord[i][j]);
+        }
+    }
     // random assign all pi simvalue
-
+    
     randomCi();
     // sim all circuit
     simall();
     //collect the word level simulate value
-    apb->getsimValue();
-    amb->getsimValue();
-    bpc->getsimValue();
+    //apb->getsimValue();
+    //amb->getsimValue();
+   // bpc->getsimValue();
+    for(int i=0;i<checkList.size();i++)checkList[i]->getsimValue();
+    for(int i=0;i<allCOwords.size();i++)allCOwords[i]->getsimValue();
+    /**
     apc->getsimValue();
     apbpc->getsimValue();
     ambpc->getsimValue();
-    vector< Word*> checkList;
     checkList.push_back(apb);
     checkList.push_back(bpc);
     checkList.push_back(apc);
     checkList.push_back(apbpc);
     checkList.push_back(ambpc);
+    **/
     //show how we match gia to word info (need modify to hash match version)
     unordered_map<uint,vector<NodeInfo*>> hashsimmap;
     unordered_map<uint, vector<NodeInfo*>>::iterator it;
@@ -216,20 +317,29 @@ int Collection::simAndMatch(){
 //        it=hashsimmap.find(~simv);
     }
    for(int i=0;i<checkList.size();i++){
+       /**
             for(int j=0;j<checkList[i]->nbits();j++){
                 it=hashsimmap.find(checkList[i]->simvalue(j));
                 if(it!=hashsimmap.end()){
                     for(int k=0;k<it->second.size();k++){
-                        cout<<checkList[i]->functionStr()<<" "<<j<<"th bit"<<" match: n"<<(it->second)[k]->nodeid()<<endl;
+                        if(checkList[i]->simvalue(j)==0)continue;
+                       // cout<<checkList[i]->functionStr()<<" "<<j<<"th bit"<<" match: n"<<(it->second)[k]->nodeid()<<endl;
                     }
                     
                 }
                 it=hashsimmap.find(~checkList[i]->simvalue(j));
                 if(it!=hashsimmap.end()){
                     for(int k=0;k<it->second.size();k++){
-                        cout<<checkList[i]->functionStr()<<" "<<j<<"th bit"<<" match: !n"<<(it->second)[k]->nodeid()<<endl;
+                        if(checkList[i]->simvalue(j)==0)continue;
+                       // cout<<checkList[i]->functionStr()<<" "<<j<<"th bit"<<" match: !n"<<(it->second)[k]->nodeid()<<endl;
                     }
                     
+                }
+            }**/
+            // word level match
+            for(int j=0;j<allCOwords.size();j++){
+                if(allCOwords[j]->match(checkList[i])>0.9){
+                    cout<<checkList[i]->functionStr()<<" "<<" match: "<<allCOwords[j]->functionStr()<<endl;
                 }
             }
     }
@@ -268,14 +378,15 @@ int simpleAddsimModule(const vector<uint> &a,const vector<uint> &b,vector<uint> 
         }
         //add function------(try to change to -/*/<</>> to create more usage)
         sc=inv ? sa-sb:sa+sb;
-        cout<<sa<<" "<<sb<<" "<<sc<<endl;
+       // cout<<sa<<" "<<sb<<" "<<sc<<endl;
         
         //------------------
         for(int k=0;k<c.size();k++){
             c[k]=(c[k]>>1)+ (((sc>>k)%2)<<31);
         }
     }
-//cout------------
+//cout------------//**
+/**
     for(int k=0;k<a.size();k++){
         bitset<32> xa(a[k]);
         cout<<"a:"<<xa<<endl;
@@ -288,6 +399,7 @@ int simpleAddsimModule(const vector<uint> &a,const vector<uint> &b,vector<uint> 
         bitset<32> xc(c[k]);
         cout<<"c:"<<xc<<endl;
     }
+    **/
 //------------
     return 0;
 }
@@ -310,7 +422,7 @@ int simpleMultsimModule(const vector<uint> &a,const vector<uint> &b,vector<uint>
         }
         //add function------(try to change to -/*/<</>> to create more usage)
         sc=sa*sb;
-        cout<<sa<<" "<<sb<<" "<<sc<<endl;
+        //cout<<sa<<" "<<sb<<" "<<sc<<endl;
         
         //------------------
         for(int k=0;k<c.size();k++){
@@ -318,6 +430,7 @@ int simpleMultsimModule(const vector<uint> &a,const vector<uint> &b,vector<uint>
         }
     }
     //cout------------
+    /**
     for(int k=0;k<a.size();k++){
         bitset<32> xa(a[k]);
         cout<<"a:"<<xa<<endl;
@@ -329,7 +442,7 @@ int simpleMultsimModule(const vector<uint> &a,const vector<uint> &b,vector<uint>
     for(int k=0;k<c.size();k++){
         bitset<32> xc(c[k]);
         cout<<"c:"<<xc<<endl;
-    }
+    }**/
 //------------
 
     return 0;

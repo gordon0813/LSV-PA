@@ -99,16 +99,19 @@ private:
  
 class Word{
     public:
-    Word(){iscut=0;};
+    Word(){iscut=0;ctype="";};
     Word(int nbits);
     int addbit(NodeInfo* ni,int nthbit);
     int check();
+    double match(Word* bigger);
     //need some rule to check c's bits number (+1 bits is safe but may redundent)
+
     Word* add(Word* b){
         Word* c=new Word(max(word.size(),b->word.size())+1);
         c->type="+"; c->input.push_back(this) ; c->input.push_back(b) ; 
         return c;
     };//example return  c=a+b
+    Word* sub(Word*b);
     Word* mult(Word* b);
     int simModule();//simulation by word level info (get info from fanin matched gate ,if input not matched yet ,recur call)
     int set2Incut();
@@ -124,10 +127,12 @@ class Word{
     vector<bool>isinv;   // link to  gia but maybe inverse
     vector<uint>simvalues;// formal/guess simulation value
     string type; // "*"  or "&" or "==" or "+" .....
+    string ctype;
     string name;
     vector<Word*>input;  // input = [wa ,wb] ,type= "+", means word=wa+wb 
     size_t mark; //check if sim value is newest;
     short isconstant;// this is constant ? if yes simvalues will fix
+    int constantValue;
     short iscut;
 };
 class Collection
@@ -155,6 +160,7 @@ public:
     //beta test---------
     int detectXor();
     int createFaninWords(vector<string>namecis);
+    int createFanoutWords(vector<string>namecos);
     int simAndMatch();
 
 
@@ -178,6 +184,8 @@ public:
             if (Gia_ObjIsAnd(pobj))
             {
                 simNode(pobj);
+            }else if(Gia_ObjIsCo(pobj)){
+                simPO(pobj);
             }
         }
     }
@@ -471,6 +479,7 @@ public:
         Gia_ManMarkCone_rec(giacir,Gia_ManObj(giacir, 62),1);**/
         return 0;
     }
+    vector<Word*> allWordModules(const vector<Word*>&as,const vector<Word*>&bs,int samelevel);
 private:
     void unlockAll(){for(int i=0;i<ninfos.size();i++){ninfos[i]->unlock();}  }
     Gia_Obj_t *getobj(int id) { return Gia_ManObj(giacir, id); }
@@ -564,6 +573,14 @@ private:
         ninfos[Gia_ObjId(giacir, n)]->addMatchComponent(matchcomp); return 0;
     }
     NodeInfo *giaInfo(Gia_Obj_t *n) { return ninfos[Gia_ObjId(giacir, n)]; }
+    int simPO(Gia_Obj_t *thenode){
+        NodeInfo *info = giaInfo(thenode);
+        NodeInfo *linfo = giaInfo(Gia_ObjFanin0(thenode));
+        int linv = Gia_ObjFaninC0(thenode);
+        int v=(linv == 0) ? (linfo->simValue) : (~linfo->simValue);
+        info->setSim(v);
+        return 0;
+    }
     int simNode(Gia_Obj_t *thenode)
     {
         // Gia_Obj_t  * thenode=getobj(id);
@@ -594,6 +611,7 @@ private:
     Vec_Int_t *dfs;
     std::vector<NodeInfo *> ninfos;
     vector<Word*>allwords;
+    vector<Word*>allCOwords;
     vector<size_t> marks;
     size_t travelm;
     int count;

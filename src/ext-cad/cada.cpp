@@ -11,7 +11,7 @@ struct PackageRegistrationManager {
 } lsvPackageRegistrationManager;
 
 
-void Lsv_NtkPrintNodes(Abc_Ntk_t*  pNtk ,vector<string>&cinames ) {
+void Lsv_NtkPrintNodes(Abc_Ntk_t*  pNtk ,vector<string>&cinames,vector<string>&conames ) {
   Abc_Obj_t* pObj;
   int i;
   /**
@@ -30,6 +30,10 @@ void Lsv_NtkPrintNodes(Abc_Ntk_t*  pNtk ,vector<string>&cinames ) {
   Abc_NtkForEachCi(pNtk, pObj, i){
      printf("fanin Id = %d, name = %s\n", Abc_ObjId(pObj), Abc_ObjName(pObj));
      cinames.push_back(string(Abc_ObjName(pObj)));
+  }
+  Abc_NtkForEachCo(pNtk, pObj, i){
+     printf("fanout Id = %d, name = %s\n", Abc_ObjId(pObj), Abc_ObjName(pObj));
+     conames.push_back(string(Abc_ObjName(pObj)));
   }
   
 
@@ -51,9 +55,11 @@ int Lsv_CommandPrintNodes(Abc_Frame_t* pAbc, int argc, char** argv) {
   }
   //Lsv_NtkPrintNodes(pNtk);
   vector<string> namesci; 
+  vector<string> namesco; 
   Collection a=Collection(pAbc->pGia);
-  Lsv_NtkPrintNodes(pNtk,namesci);
+  Lsv_NtkPrintNodes(pNtk,namesci,namesco);
   a.createFaninWords(namesci);
+  a.createFanoutWords(namesco);
   a.simAndMatch();
   //a.incut( );
  // a.detectXor();
