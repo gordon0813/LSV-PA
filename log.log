@@ -4,50 +4,194 @@ fanin Id = 1, name = in1[0]
 fanin Id = 2, name = in1[1]
 fanin Id = 3, name = in1[2]
 fanin Id = 4, name = in1[3]
-fanin Id = 5, name = in2[0]
-fanin Id = 6, name = in2[1]
-fanin Id = 7, name = in2[2]
-fanin Id = 8, name = in2[3]
-fanin Id = 9, name = in3[0]
-fanin Id = 10, name = in3[1]
-fanin Id = 11, name = in3[2]
-fanin Id = 12, name = in3[3]
-fanout Id = 13, name = out1[0]
-fanout Id = 14, name = out1[1]
-fanout Id = 15, name = out1[2]
-fanout Id = 16, name = out1[3]
+fanin Id = 5, name = in1[4]
+fanin Id = 6, name = in1[5]
+fanin Id = 7, name = in1[6]
+fanin Id = 8, name = in1[7]
+fanin Id = 9, name = in2[0]
+fanin Id = 10, name = in2[1]
+fanin Id = 11, name = in2[2]
+fanin Id = 12, name = in2[3]
+fanin Id = 13, name = in2[4]
+fanin Id = 14, name = in2[5]
+fanin Id = 15, name = in2[6]
+fanin Id = 16, name = in2[7]
+fanin Id = 17, name = in3[0]
+fanin Id = 18, name = in3[1]
+fanin Id = 19, name = in3[2]
+fanin Id = 20, name = in3[3]
+fanin Id = 21, name = in3[4]
+fanin Id = 22, name = in3[5]
+fanin Id = 23, name = in3[6]
+fanin Id = 24, name = in3[7]
+fanout Id = 25, name = out1[0]
+fanout Id = 26, name = out1[1]
+fanout Id = 27, name = out1[2]
+fanout Id = 28, name = out1[3]
+fanout Id = 29, name = out1[4]
+fanout Id = 30, name = out1[5]
+fanout Id = 31, name = out1[6]
+fanout Id = 32, name = out1[7]
+fanout Id = 33, name = out1[8]
+fanout Id = 34, name = out1[9]
+fanout Id = 35, name = out1[10]
+fanout Id = 36, name = out1[11]
+fanout Id = 37, name = out1[12]
+fanout Id = 38, name = out1[13]
+fanout Id = 39, name = out1[14]
+fanout Id = 40, name = out1[15]
+fanout Id = 41, name = out1[16]
+fanout Id = 42, name = out1[17]
+fanout Id = 43, name = out1[18]
+fanout Id = 44, name = out1[19]
+fanout Id = 45, name = out1[20]
+fanout Id = 46, name = out1[21]
+fanout Id = 47, name = out1[22]
+fanout Id = 48, name = out1[23]
+fanout Id = 49, name = out2[0]
+fanout Id = 50, name = out2[1]
+fanout Id = 51, name = out2[2]
+fanout Id = 52, name = out2[3]
+fanout Id = 53, name = out2[4]
+fanout Id = 54, name = out2[5]
+fanout Id = 55, name = out2[6]
+fanout Id = 56, name = out2[7]
+fanout Id = 57, name = out2[8]
+fanout Id = 58, name = out2[9]
+fanout Id = 59, name = out2[10]
+fanout Id = 60, name = out2[11]
+fanout Id = 61, name = out2[12]
+fanout Id = 62, name = out2[13]
+fanout Id = 63, name = out2[14]
+fanout Id = 64, name = out2[15]
 in1 0
-id 2 0
-in1 1
-id 16 1
-in1 2
-id 31 2
-in1 3
-id 51 3
-in2 0
-id 3 0
-in2 1
-id 15 1
-in2 2
-id 32 2
-in2 3
-id 52 3
-in3 0
 id 1 0
+in1 1
+id 3 1
+in1 2
+id 7 2
+in1 3
+id 40 3
+in1 4
+id 89 4
+in1 5
+id 134 5
+in1 6
+id 190 6
+in1 7
+id 247 7
+in2 0
+id 1910 0
+in2 1
+id 1911 1
+in2 2
+id 1912 2
+in2 3
+id 1913 3
+in2 4
+id 1914 4
+in2 5
+id 1915 5
+in2 6
+id 1916 6
+in2 7
+id 1917 7
+in3 0
+id 1333 0
 in3 1
-id 17 1
+id 1336 1
 in3 2
-id 33 2
+id 1344 2
 in3 3
-id 53 3
+id 1365 3
+in3 4
+id 1388 4
+in3 5
+id 1419 5
+in3 6
+id 1488 6
+in3 7
+id 1534 7
 out1 0
-id 10 0
+id 2 0
 out1 1
-id 27 1
+id 6 1
 out1 2
-id 46 2
+id 25 2
 out1 3
-id 68 3
+id 63 3
+out1 4
+id 106 4
+out1 5
+id 171 5
+out1 6
+id 242 6
+out1 7
+id 332 7
+out1 8
+id 422 8
+out1 9
+id 515 9
+out1 10
+id 610 10
+out1 11
+id 695 11
+out1 12
+id 779 12
+out1 13
+id 853 13
+out1 14
+id 929 14
+out1 15
+id 996 15
+out1 16
+id 1057 16
+out1 17
+id 1114 17
+out1 18
+id 1163 18
+out1 19
+id 1213 19
+out1 20
+id 1254 20
+out1 21
+id 1288 21
+out1 22
+id 1313 22
+out1 23
+id 1332 23
+out2 0
+id 1335 0
+out2 1
+id 1342 1
+out2 2
+id 1356 2
+out2 3
+id 1380 3
+out2 4
+id 1414 4
+out2 5
+id 1457 5
+out2 6
+id 1513 6
+out2 7
+id 1580 7
+out2 8
+id 1648 8
+out2 9
+id 1716 9
+out2 10
+id 1774 10
+out2 11
+id 1823 11
+out2 12
+id 1861 12
+out2 13
+id 1888 13
+out2 14
+id 1904 14
+out2 15
+id 1909 15
 i1
 (in1+in2)
 (in1-in2)
@@ -392,15 +536,5 @@ i2
 ((in3*in2)+in3)
 ((in3*in2)-in3)
 ((in3*in2)*in3)
-(in1+(in2+in3))  match: out1
-(in1+(in3+in2))  match: out1
-(in2+(in1+in3))  match: out1
-(in2+(in3+in1))  match: out1
-(in3+(in1+in2))  match: out1
-(in3+(in2+in1))  match: out1
-((in1+in2)+in3)  match: out1
-((in1+in3)+in2)  match: out1
-((in2+in1)+in3)  match: out1
-((in2+in3)+in1)  match: out1
-((in3+in1)+in2)  match: out1
-((in3+in2)+in1)  match: out1
+(in1*in3)  match: out2
+(in3*in1)  match: out2

@@ -1,6 +1,14 @@
 #include <unordered_map>
 #include "ext-cad/cada.h"
 
+//write out flow
+//first check all PO save in Collection::allCOwords
+//in simandmatch select matching function for each PO
+//if some PO not match ,build gate level circuit
+//
+
+
+
 using namespace std;
 int Collection::detectXor()
 {
