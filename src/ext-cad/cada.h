@@ -7,6 +7,7 @@
 #include <fstream>
 #include <sstream>
 #include <bitset>
+#include <map>
 
 #define ANDTYPE 0
 #define XORTYPE 1
@@ -116,10 +117,12 @@ class Word{
     int simModule();//simulation by word level info (get info from fanin matched gate ,if input not matched yet ,recur call)
     int set2Incut();
     void setName(string n){this->name=n;};
+    string getName(){return this->name;};
     string functionStr();
     vector<uint> getsimValue();
     int nbits(){return word.size();}
     uint simvalue(int nthbits){return simvalues[nthbits];}
+    size_t size() {return word.size();}
     private:
     
     
@@ -479,8 +482,46 @@ public:
         Gia_ManMarkCone_rec(giacir,Gia_ManObj(giacir, 62),1);**/
         return 0;
     }
-    void CadaOutput(const string& fileNameIn, const string& fileNameOut) { 
+    void CadaOutput(const string& fileNameIn, const string& fileNameOut) {
+        if (outputFunctions.size() == allCOwords.size()) {
+            // completely matched
+            fstream fout(fileNameOut, ios::out);
+            const string tabStr = "    "; 
 
+            fout << "module top(";
+            for (const auto& wcpcpy: allwords) {
+                fout << wcpcpy->getName() << ", ";
+            }
+            for (const auto& w: allCOwords) {
+                if (&w != &allCOwords[0]) {
+                    cout << ", ";
+                }
+                fout << w->getName();
+            }
+            fout << ");" <<endl;
+
+            
+            for (const auto& w: allwords) {
+                fout << tabStr << "input [" << w->size() - 1 << ":" << "0] "
+                    << w->getName() << ";" << endl;
+            }
+            for (const auto& w: allCOwords) {
+                fout << tabStr << "output [" << w->size() - 1 << ":" << "0] "
+                    << w->getName() << ";" << endl;
+            }
+            for (const auto& fn: outputFunctions) {
+                fout << tabStr << fn.second << endl;
+            }
+            fout << "endmodule" << endl;
+            fout.close();
+        } else {
+            // match failed: dump input to output
+            ifstream fin(fileNameIn, ios::binary);
+            ofstream fout(fileNameOut, ios::binary);
+            fout << fin.rdbuf();
+            fin.close();
+            fout.close();
+        }
     }
     vector<Word*> allWordModules(const vector<Word*>&as,const vector<Word*>&bs,int samelevel);
 private:
@@ -615,6 +656,7 @@ private:
     std::vector<NodeInfo *> ninfos;
     vector<Word*>allwords;
     vector<Word*>allCOwords;
+    map<int, string> outputFunctions;
     vector<size_t> marks;
     size_t travelm;
     int count;

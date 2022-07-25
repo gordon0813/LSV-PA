@@ -128,12 +128,12 @@ clk = clock();
     //////////////////////////////////////////////////////////////////////////
     // read the file
 
-    sprintf( Command, "help");
-    if ( Cmd_CommandExecute( pAbc, Command ) )
-    {
-        fprintf( stdout, "Cannot execute command \"%s\".\n", Command );
-        return 1;
-    }
+    // sprintf( Command, "help");
+    // if ( Cmd_CommandExecute( pAbc, Command ) )
+    // {
+    //     fprintf( stdout, "Cannot execute command \"%s\".\n", Command );
+    //     return 1;
+    // }
 
     sprintf( Command, "read %s", pFileNameIn );
     if ( Cmd_CommandExecute( pAbc, Command ) )
@@ -160,7 +160,7 @@ clkRead = clock() - clk;
 clk = clock();
     //////////////////////////////////////////////////////////////////////////
     // main function for reverse engineering
-    sprintf( Command, "lsv_print_nodes" );
+    sprintf( Command, "lsv_write_cada %s %s", pFileNameIn, pFileNameOut );
     if ( Cmd_CommandExecute( pAbc, Command ) )
     {
         fprintf( stdout, "Cannot execute command \"%s\".\n", Command );

@@ -324,7 +324,7 @@ int Collection::simAndMatch(){
         }
 //        it=hashsimmap.find(~simv);
     }
-   for(int i=0;i<checkList.size();i++){
+    for(int i=0;i<checkList.size();i++){
        /**
             for(int j=0;j<checkList[i]->nbits();j++){
                 it=hashsimmap.find(checkList[i]->simvalue(j));
@@ -348,6 +348,9 @@ int Collection::simAndMatch(){
             for(int j=0;j<allCOwords.size();j++){
                 if(allCOwords[j]->match(checkList[i])>0.9){
                     cout<<checkList[i]->functionStr()<<" "<<" match: "<<allCOwords[j]->functionStr()<<endl;
+                    if (outputFunctions.find(j) == outputFunctions.end()) {
+                        outputFunctions.insert({j, "assign " + allCOwords[j]->functionStr() + " = " + checkList[i]->functionStr() + ";"});
+                    }
                 }
             }
     }
