@@ -479,6 +479,9 @@ public:
         Gia_ManMarkCone_rec(giacir,Gia_ManObj(giacir, 62),1);**/
         return 0;
     }
+    void CadaOutput(const string& fileNameIn, const string& fileNameOut) { 
+
+    }
     vector<Word*> allWordModules(const vector<Word*>&as,const vector<Word*>&bs,int samelevel);
 private:
     void unlockAll(){for(int i=0;i<ninfos.size();i++){ninfos[i]->unlock();}  }

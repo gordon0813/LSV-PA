@@ -20,6 +20,7 @@
 
 #include <stdio.h>
 #include <time.h>
+#include <string.h>
 
 ////////////////////////////////////////////////////////////////////////
 ///                        DECLARATIONS                              ///
@@ -78,19 +79,46 @@ int main( int argc, char * argv[] )
     int fVerify     = 1;
     // variables
     Abc_Frame_t * pAbc;
-    char * pFileName;
+    char *pFileNameIn = 0, *pFileNameOut = 0;
     char Command[1000];
-    clock_t clkRead, clkResyn, clkVer, clk;
+    clock_t clkRead, clkRevEng, clk;
 
     //////////////////////////////////////////////////////////////////////////
     // get the input file name
-    if ( argc != 2 )
+    if ( argc != 5 )
     {
         printf( "Wrong number of command-line arguments.\n" );
         return 1;
     }
-    pFileName = argv[1];
+    short isInput = 0, isOutput = 0;
+    for (int i = 1; i < 5; ++i) {
+        // just in case
+        if (isInput == 1 && isOutput == 1) {
+            printf ("Error while parsing input.\n");
+            return 1;
+        }
+        if (isInput == 0 && isOutput == 0) {
+            if (strcmp(argv[i], "-input") == 0) {
+                isInput = 1;
+            } else if (strcmp(argv[i], "-output") == 0) {
+                isOutput = 1;
+            } else {
+                printf ("Error while parsing input.\n");
+                return 1;
+            }
 
+        } else if (isInput == 1) {
+            pFileNameIn = argv[i];
+            isInput = 0;
+            
+        } else if (isOutput == 1) {
+            pFileNameOut = argv[i];
+            isOutput = 0;
+            
+        } 
+    }
+    printf("Input  filepath: %s\n", pFileNameIn);
+    printf("Output filepath: %s\n", pFileNameOut);
     //////////////////////////////////////////////////////////////////////////
     // start the ABC framework
     Abc_Start();
@@ -99,16 +127,29 @@ int main( int argc, char * argv[] )
 clk = clock();
     //////////////////////////////////////////////////////////////////////////
     // read the file
-    sprintf( Command, "read %s", pFileName );
+
+    sprintf( Command, "help");
     if ( Cmd_CommandExecute( pAbc, Command ) )
     {
         fprintf( stdout, "Cannot execute command \"%s\".\n", Command );
         return 1;
     }
 
-    //////////////////////////////////////////////////////////////////////////
-    // balance
-    sprintf( Command, "balance" );
+    sprintf( Command, "read %s", pFileNameIn );
+    if ( Cmd_CommandExecute( pAbc, Command ) )
+    {
+        fprintf( stdout, "Cannot execute command \"%s\".\n", Command );
+        return 1;
+    }
+
+    sprintf( Command, "strash" );
+    if ( Cmd_CommandExecute( pAbc, Command ) )
+    {
+        fprintf( stdout, "Cannot execute command \"%s\".\n", Command );
+        return 1;
+    }
+
+    sprintf( Command, "&get" );
     if ( Cmd_CommandExecute( pAbc, Command ) )
     {
         fprintf( stdout, "Cannot execute command \"%s\".\n", Command );
@@ -116,79 +157,20 @@ clk = clock();
     }
 clkRead = clock() - clk;
 
-    //////////////////////////////////////////////////////////////////////////
-    // print stats
-    if ( fPrintStats )
-    {
-        sprintf( Command, "print_stats" );
-        if ( Cmd_CommandExecute( pAbc, Command ) )
-        {
-            fprintf( stdout, "Cannot execute command \"%s\".\n", Command );
-            return 1;
-        }
-    }
-
 clk = clock();
     //////////////////////////////////////////////////////////////////////////
-    // synthesize
-    if ( fUseResyn2 )
-    {
-        sprintf( Command, "balance; rewrite -l; refactor -l; balance; rewrite -l; rewrite -lz; balance; refactor -lz; rewrite -lz; balance" );
-        if ( Cmd_CommandExecute( pAbc, Command ) )
-        {
-            fprintf( stdout, "Cannot execute command \"%s\".\n", Command );
-            return 1;
-        }
-    }
-    else
-    {
-        sprintf( Command, "balance; rewrite -l; rewrite -lz; balance; rewrite -lz; balance" );
-        if ( Cmd_CommandExecute( pAbc, Command ) )
-        {
-            fprintf( stdout, "Cannot execute command \"%s\".\n", Command );
-            return 1;
-        }
-    }
-clkResyn = clock() - clk;
-
-    //////////////////////////////////////////////////////////////////////////
-    // print stats
-    if ( fPrintStats )
-    {
-        sprintf( Command, "print_stats" );
-        if ( Cmd_CommandExecute( pAbc, Command ) )
-        {
-            fprintf( stdout, "Cannot execute command \"%s\".\n", Command );
-            return 1;
-        }
-    }
-
-    //////////////////////////////////////////////////////////////////////////
-    // write the result in blif
-    sprintf( Command, "write_blif result.blif" );
+    // main function for reverse engineering
+    sprintf( Command, "lsv_print_nodes" );
     if ( Cmd_CommandExecute( pAbc, Command ) )
     {
         fprintf( stdout, "Cannot execute command \"%s\".\n", Command );
         return 1;
-    }
 
-    //////////////////////////////////////////////////////////////////////////
-    // perform verification
-clk = clock();
-    if ( fVerify )
-    {
-        sprintf( Command, "cec %s result.blif", pFileName );
-        if ( Cmd_CommandExecute( pAbc, Command ) )
-        {
-            fprintf( stdout, "Cannot execute command \"%s\".\n", Command );
-            return 1;
-        }
     }
-clkVer = clock() - clk;
+clkRevEng = clock() - clk;
 
     printf( "Reading = %6.2f sec   ",     (float)(clkRead)/(float)(CLOCKS_PER_SEC) );
-    printf( "Rewriting = %6.2f sec   ",   (float)(clkResyn)/(float)(CLOCKS_PER_SEC) );
-    printf( "Verification = %6.2f sec\n", (float)(clkVer)/(float)(CLOCKS_PER_SEC) );
+    printf( "Reverse Engineering = %6.2f sec\n", (float)(clkRevEng)/(float)(CLOCKS_PER_SEC) );
 
     //////////////////////////////////////////////////////////////////////////
     // stop the ABC framework
