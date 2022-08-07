@@ -130,6 +130,22 @@ int Word::addbit(NodeInfo *ni, int nthbit)
     word[nthbit] = ni;
     return 0;
 }
+int Word::candidatesI(vector<Word*>&allc){
+    if(iscut)allc.push_back(this);
+    for(int i=0;i<input.size();i++){
+        input[i]->candidatesI(allc);
+    }
+}
+int Word::isRedundent(){
+    vector<Word*>allc;
+    candidatesI(allc);
+    for (int i=0;i<allc.size();i++){
+        for(int j=0;j<i;j++){
+            if(allc[i]==allc[j])return 1;
+        }
+    }
+    return 0;
+}
 int Collection::createFaninWords(vector<string> namecis)
 {
     string pname;
@@ -225,14 +241,24 @@ vector<Word*> Collection::allWordModules(const vector<Word*>&as,const vector<Wor
         for(int j=0;j<bs.size();j++){
             if(samelevel&&i==j)continue;
             re.push_back(as[i]->add(bs[j]));
-            cout<<re.back()->functionStr()<<endl;
+           // cout<<re.back()->functionStr()<<endl;
             re.push_back(as[i]->sub(bs[j]));
-            cout<<re.back()->functionStr()<<endl;
+           // cout<<re.back()->functionStr()<<endl;
             re.push_back(as[i]->mult(bs[j]));
-            cout<<re.back()->functionStr()<<endl;
+           
         }
     }
-    return re;
+    vector<Word*> noredudent;
+    for(int i=0;i<re.size();i++){
+        if(re[i]->isRedundent()){
+            delete re[i];
+        }else{
+            noredudent.push_back(re[i]);
+            cout<<noredudent.back()->functionStr()<<endl;
+        }
+    }
+
+    return noredudent;
 }
 double Word::match(Word* bigger){
     //int maxmatch=0;
@@ -255,7 +281,7 @@ int Collection::simAndMatch(){
     }
     vector<vector<Word*>>nlevelWord;
     nlevelWord.push_back(allwords);
-    int limitdepth=4;
+    int limitdepth=5;
     vector<Word*>onelevel;
     vector<Word*>onetmp;
     for(int i=1;i<min(int(allwords.size()),limitdepth);i++){

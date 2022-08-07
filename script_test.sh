@@ -1,4 +1,4 @@
-read /home/gordon1387/code/cadA2022/testcase/release/test11/top_primitive.v
+read /home/gordon1387/code/cadA2022/testcase/release/test05/top_primitive.v
 strash
 &get
 lsv_print_nodes

@@ -118,6 +118,8 @@ class Word{
     int set2Incut();
     void setName(string n){this->name=n;};
     string getName(){return this->name;};
+    int isRedundent();
+    int candidatesI(vector<Word*>&allc);
     string functionStr();
     vector<uint> getsimValue();
     int nbits(){return word.size();}
