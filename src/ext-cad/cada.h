@@ -100,7 +100,7 @@ private:
  
 class Word{
     public:
-    Word(){iscut=0;ctype="";};
+    Word(){iscut=0;isconstant=0;ctype="";};
     Word(int nbits);
     int addbit(NodeInfo* ni,int nthbit);
     int check();
@@ -122,9 +122,14 @@ class Word{
     int candidatesI(vector<Word*>&allc);
     string functionStr();
     vector<uint> getsimValue();
+    int backAssignIn(size_t n);
+    Word* isconstTrace();
+    int assignNumber(size_t number,int bit);
+    long getNumber(int bit);
     int nbits(){return word.size();}
     uint simvalue(int nthbits){return simvalues[nthbits];}
     size_t size() {return word.size();}
+    void set2const(long n){this->isconstant=true;constantValue=n;iscut=true;}
     private:
     
     
@@ -137,7 +142,7 @@ class Word{
     vector<Word*>input;  // input = [wa ,wb] ,type= "+", means word=wa+wb 
     size_t mark; //check if sim value is newest;
     short isconstant;// this is constant ? if yes simvalues will fix
-    int constantValue;
+    long constantValue;
     short iscut;
 };
 class Collection
@@ -167,6 +172,7 @@ public:
     int createFaninWords(vector<string>namecis);
     int createFanoutWords(vector<string>namecos);
     int simAndMatch();
+    int simMatchPair(Word* wtarget,Word* guess);
 
 
     //--------------------

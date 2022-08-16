@@ -263,10 +263,12 @@ vector<Word*> Collection::allWordModules(const vector<Word*>&as,const vector<Wor
 double Word::match(Word* bigger){
     //int maxmatch=0;
     int nowmatch=0;
-    for(int i=0;i<min(simvalues.size(),bigger->simvalues.size());i++){
+    int i;
+    for(i=0;i<min(simvalues.size(),bigger->simvalues.size());i++){
         if(bigger->simvalues[i]==simvalues[i])nowmatch++;
     }
-    return  double(nowmatch)/simvalues.size();
+    cout<<"siumlarity "<<double(nowmatch)/i<<endl;
+    return  double(nowmatch)/i;
 }
 //for test01
 int Collection::simAndMatch(){
@@ -299,14 +301,18 @@ int Collection::simAndMatch(){
     }
     //return 0;
     // create arthmetic module
-    /**
+    Word* con=new Word(20);
+    con->set2const(0);
     Word* apb= allwords[0]->add(allwords[1]);
     Word* amb= allwords[0]->mult(allwords[1]);
     Word* bpc= allwords[1]->add(allwords[2]);
     Word* apc= allwords[0]->add(allwords[2]);
     Word* apbpc= apb->add(allwords[2]);
+    
     Word* ambpc= amb->add(allwords[2]);
-**/
+    Word* apbpcC= apbpc->add(con);
+    simMatchPair(allCOwords[0],apbpcC);
+    return 0;
     vector< Word*> checkList;
     for(int i=0;i<nlevelWord.size();i++){
         for(int j=0;j<nlevelWord[i].size();j++){
@@ -386,10 +392,21 @@ int Collection::simAndMatch(){
 }
 Word::Word(int nbits){
     iscut=0;
+    isconstant=0;
     for(int i=0;i<nbits;i++){
         simvalues.push_back(0);
         word.push_back(nullptr);
     }
+}
+
+
+int constSimModule( vector<uint> &c,long n){
+     size_t sc=n;
+     for(int i=0;i<32;i++){
+     for(int k=0;k<c.size();k++){
+        c[k]=(c[k]>>1)+ (((sc>>k)%2)<<31);
+    }
+     }
 }
 //what if word size > 64 ? (crash)
 //this template can be used to handle c= a+b
@@ -415,7 +432,7 @@ int simpleAddsimModule(const vector<uint> &a,const vector<uint> &b,vector<uint> 
         }
         //add function------(try to change to -/*/<</>> to create more usage)
         sc=inv ? sa-sb:sa+sb;
-       // cout<<sa<<" "<<sb<<" "<<sc<<endl;
+       cout<<sa<<" "<<sb<<" "<<sc<<endl;
         
         //------------------
         for(int k=0;k<c.size();k++){
@@ -484,14 +501,131 @@ int simpleMultsimModule(const vector<uint> &a,const vector<uint> &b,vector<uint>
 
     return 0;
 }
+Word* Word::isconstTrace(){
+
+    if(isconstant)return this;
+    Word* c=0;
+    for(int i=0;i<input.size();i++){
+        c=input[i]->isconstTrace();
+        if(c!=0){
+            return c;
+        }
+    }
+    return 0;
+}
+int Word::assignNumber(size_t number,int n){
+    for(int k=0;k<word.size();k++){
+        if((number>>k)%2){
+            word[k]->simValue= word[k]->simValue|(1<<n);
+        }else{
+            word[k]->simValue= word[k]->simValue&(~(1<<n));
+        }
+    }
+    return 0;
+}
+long Word::getNumber(int bit){
+    long sa=0;
+    
+    for(int k=word.size()-1;k>=0;k--){
+        if(word[k]==nullptr){
+            sa=sa<<1;
+            sa+=((simvalues[k]  >>bit) %2);
+        }else{
+            sa=sa<<1;
+            sa+=((word[k]->simValue  >>bit) %2);
+        }
+            
+    }
+    return sa;
+}
+
+
+int Word::backAssignIn(size_t n){
+    
+    if(iscut){
+        if(!isconstant){
+            assignNumber(n,0);
+        }else{
+
+        }
+    }else if(type.compare("+")==0){
+        if(n==2)n=0;
+        if(n==1){
+            input[0]->backAssignIn(1);
+            input[1]->backAssignIn(0);
+        }else{  
+            input[0]->backAssignIn(0);
+            input[1]->backAssignIn(0);
+        }
+    }else if(type.compare("-")==0){//c=a-b
+    if(n==2)n=0;
+        if(n==1){
+            input[0]->backAssignIn(1);
+            input[1]->backAssignIn(0);
+        }else{  
+            input[0]->backAssignIn(0);
+            input[1]->backAssignIn(0);
+        }
+    }else if(type.compare("*")==0){//c=a*b
+         if(n==2)n=1;
+        if(n==1){
+            input[0]->backAssignIn(1);
+            input[1]->backAssignIn(1);
+        }else{  
+            input[0]->backAssignIn(0);
+            input[1]->backAssignIn(0);
+        }
+        //todo
+    }else if(type.compare("neg")==0){ // a'=-a
+
+    }else if(type.compare("^")==0){//c=a^b
+
+    }else if(type.compare("<<")==0){
+
+    }
+    
+}
+int Collection::simMatchPair(Word* wtarget,Word* guess){
+    Word* c=guess->isconstTrace();
+    long cons;
+   if(c){
+      
+      randomCi();
+      guess->backAssignIn(2);
+      simall();
+      //guess->getsimValue();
+      cons= wtarget->getNumber(0);
+      cout<<"const is "<<cons<<endl;
+      cout<<wtarget->getNumber(1)<<endl;
+      c->set2const(cons);
+      randomCi();
+      simall();
+      guess->getsimValue();
+      wtarget->getsimValue();
+      if(wtarget->match(guess)>0.95){
+          cout<<"match\n";
+          cout<<guess->functionStr()<<endl;
+      }
+      for(int i=0;i<32;i++){
+         // cout<<wtarget->getNumber(i)<<" "<<guess->getNumber(i)<<" "<<guess->getNumber(i)-wtarget->getNumber(i)<<endl;
+      }
+
+   }
+}
 vector<uint> Word::getsimValue(){
     //vector<int>re;
     vector<uint> a;
     vector<uint> b;
     if(iscut){
-         for(int i=0;i<word.size();i++){
-            simvalues[i]=(word[i]->simValue);
-         }
+        if(isconstant){
+            constSimModule(simvalues,constantValue);
+        }else{
+            for(int i=0;i<word.size();i++){
+                simvalues[i]=(word[i]->simValue);
+             }
+
+        }
+         
     }else if(type.compare("+")==0){
         a=input[0]->getsimValue();
         b=input[1]->getsimValue();
@@ -535,6 +669,8 @@ string Word::functionStr(){
    string b;
    if(input.size()>0){
        a=input[0]->functionStr();
+   }else if(isconstant){
+       return to_string(this->word.size())+"'d"+to_string(constantValue);
    }else{
        return name;
    }
