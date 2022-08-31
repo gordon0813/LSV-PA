@@ -267,7 +267,7 @@ double Word::match(Word* bigger){
     for(i=0;i<min(simvalues.size(),bigger->simvalues.size());i++){
         if(bigger->simvalues[i]==simvalues[i])nowmatch++;
     }
-    cout<<"siumlarity "<<double(nowmatch)/i<<endl;
+   // cout<<"siumlarity "<<double(nowmatch)/i<<endl;
     return  double(nowmatch)/i;
 }
 //for test01
@@ -281,6 +281,9 @@ int Collection::simAndMatch(){
        allCOwords[i]->check();
        allCOwords[i]->set2Incut();
     }
+    Word* con=new Word(20);
+    con->set2const(0);
+    allwords.push_back(con);
     vector<vector<Word*>>nlevelWord;
     nlevelWord.push_back(allwords);
     int limitdepth=5;
@@ -289,7 +292,7 @@ int Collection::simAndMatch(){
     for(int i=1;i<min(int(allwords.size()),limitdepth);i++){
         //nlevelWord.push_back(vector<Word*>());
         onelevel.clear();
-        cout<<"i"<<i<<endl;
+       // cout<<"i"<<i<<endl;
         for(int j=0;j<=i-1;j++){
             onetmp=allWordModules(nlevelWord[j],nlevelWord[i-j-1],j==i-j-1);
             for(int k=0;k<onetmp.size();k++)onelevel.push_back(onetmp[k]);
@@ -301,8 +304,7 @@ int Collection::simAndMatch(){
     }
     //return 0;
     // create arthmetic module
-    Word* con=new Word(20);
-    con->set2const(0);
+    
     Word* apb= allwords[0]->add(allwords[1]);
     Word* amb= allwords[0]->mult(allwords[1]);
     Word* bpc= allwords[1]->add(allwords[2]);
@@ -311,8 +313,8 @@ int Collection::simAndMatch(){
     
     Word* ambpc= amb->add(allwords[2]);
     Word* apbpcC= apbpc->add(con);
-    simMatchPair(allCOwords[0],apbpcC);
-    return 0;
+    //simMatchPair(allCOwords[0],apbpcC);
+    //return 0;
     vector< Word*> checkList;
     for(int i=0;i<nlevelWord.size();i++){
         for(int j=0;j<nlevelWord[i].size();j++){
@@ -378,12 +380,30 @@ int Collection::simAndMatch(){
             }**/
             // word level match
             for(int j=0;j<allCOwords.size();j++){
-                if(allCOwords[j]->match(checkList[i])>0.9){
+                 if (outputFunctions.find(j) != outputFunctions.end())continue;
+                int ccase=simMatchPair(allCOwords[j],checkList[i]);
+                //ccase=0 unmatch, ccase=1 match without constant ,ccase=2 match with constant 
+                if(ccase==1){
                     cout<<checkList[i]->functionStr()<<" "<<" match: "<<allCOwords[j]->functionStr()<<endl;
                     if (outputFunctions.find(j) == outputFunctions.end()) {
                         outputFunctions.insert({j, "assign " + allCOwords[j]->functionStr() + " = " + checkList[i]->functionStr() + ";"});
+                    }//todo : replace with no constant version output 
+
+                }else if(ccase==2){
+                    cout<<checkList[i]->functionStr()<<" "<<" matchc: "<<allCOwords[j]->functionStr()<<endl;
+                    
+                    if (outputFunctions.find(j) == outputFunctions.end()) {
+                        outputFunctions.insert({j, "assign " + allCOwords[j]->functionStr() + " = " + checkList[i]->functionStr() + ";"});
                     }
+
                 }
+                
+                
+                
+                /**  old 
+                if(allCOwords[j]->match(checkList[i])>0.9){
+                    
+                }**/
             }
     }
 
@@ -432,7 +452,7 @@ int simpleAddsimModule(const vector<uint> &a,const vector<uint> &b,vector<uint> 
         }
         //add function------(try to change to -/*/<</>> to create more usage)
         sc=inv ? sa-sb:sa+sb;
-       cout<<sa<<" "<<sb<<" "<<sc<<endl;
+       //cout<<sa<<" "<<sb<<" "<<sc<<endl;
         
         //------------------
         for(int k=0;k<c.size();k++){
@@ -595,8 +615,9 @@ int Collection::simMatchPair(Word* wtarget,Word* guess){
       simall();
       //guess->getsimValue();
       cons= wtarget->getNumber(0);
-      cout<<"const is "<<cons<<endl;
-      cout<<wtarget->getNumber(1)<<endl;
+      if(cons==0)return 0;
+      //cout<<"const is "<<cons<<endl;
+     // cout<<wtarget->getNumber(1)<<endl;
       c->set2const(cons);
       randomCi();
       simall();
@@ -605,12 +626,26 @@ int Collection::simMatchPair(Word* wtarget,Word* guess){
       if(wtarget->match(guess)>0.95){
           cout<<"match\n";
           cout<<guess->functionStr()<<endl;
+          return 2;
       }
       for(int i=0;i<32;i++){
          // cout<<wtarget->getNumber(i)<<" "<<guess->getNumber(i)<<" "<<guess->getNumber(i)-wtarget->getNumber(i)<<endl;
       }
+      
+
+   }else{
+       randomCi();
+       simall();
+       guess->getsimValue();
+      wtarget->getsimValue();
+      if(wtarget->match(guess)>0.95){
+          cout<<"match\n";
+          cout<<guess->functionStr()<<endl;
+          return 1;
+      }
 
    }
+   return 0;
 }
 vector<uint> Word::getsimValue(){
     //vector<int>re;
