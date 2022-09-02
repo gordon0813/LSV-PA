@@ -114,6 +114,8 @@ class Word{
     };//example return  c=a+b
     Word* sub(Word*b);
     Word* mult(Word* b);
+    Word* rshfit(Word* b);
+    Word* lshfit(Word* b);
     int simModule();//simulation by word level info (get info from fanin matched gate ,if input not matched yet ,recur call)
     int set2Incut();
     void setName(string n){this->name=n;};

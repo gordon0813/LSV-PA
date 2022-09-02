@@ -235,6 +235,16 @@ Word* Word::mult(Word*b){
         c->type="*"; c->input.push_back(this) ; c->input.push_back(b) ; 
     return c;
 }
+Word* Word::rshfit(Word*b){
+    Word* c=new Word(word.size()+b->word.size()+1);
+        c->type=">>"; c->input.push_back(this) ; c->input.push_back(b) ; 
+    return c;
+}
+Word* Word::lshfit(Word*b){
+    Word* c=new Word(word.size()+b->word.size()+1);
+        c->type="<<"; c->input.push_back(this) ; c->input.push_back(b) ; 
+    return c;
+}
 vector<Word*> Collection::allWordModules(const vector<Word*>&as,const vector<Word*>&bs,int samelevel){
     vector<Word*>re;
     for(int i=0;i<as.size();i++){
@@ -245,6 +255,8 @@ vector<Word*> Collection::allWordModules(const vector<Word*>&as,const vector<Wor
             re.push_back(as[i]->sub(bs[j]));
            // cout<<re.back()->functionStr()<<endl;
             re.push_back(as[i]->mult(bs[j]));
+            re.push_back(as[i]->rshfit(bs[j]));
+            re.push_back(as[i]->lshfit(bs[j]));
            
         }
     }
@@ -254,7 +266,7 @@ vector<Word*> Collection::allWordModules(const vector<Word*>&as,const vector<Wor
             delete re[i];
         }else{
             noredudent.push_back(re[i]);
-            cout<<noredudent.back()->functionStr()<<endl;
+            //cout<<noredudent.back()->functionStr()<<endl;
         }
     }
 
@@ -503,22 +515,39 @@ int simpleMultsimModule(const vector<uint> &a,const vector<uint> &b,vector<uint>
             c[k]=(c[k]>>1)+ (((sc>>k)%2)<<31);
         }
     }
-    //cout------------
-    /**
-    for(int k=0;k<a.size();k++){
-        bitset<32> xa(a[k]);
-        cout<<"a:"<<xa<<endl;
+    return 0;
+}
+int simpleShiftsimModule(const vector<uint> &a,const vector<uint> &b,vector<uint> &c , bool rl){
+    size_t sa=0;
+    size_t sb=0;
+    size_t sc=0;
+    vector<int>tmp;     
+           // cout <<Gia_ObjId(giacir,pobj)<<" "<< x <<endl;
+    for(int i=0;i<32;i++){
+        sa=0;sb=0;
+        for(int k=a.size()-1;k>=0;k--){
+            
+            sa=sa<<1;
+            sa+=((a[k]>>i) %2);
+        }
+        for(int k=b.size()-1;k>=0;k--){
+            sb=sb<<1;
+            sb+=((b[k]>>i) %2);
+        }
+        //add function------(try to change to -/*/<</>> to create more usage)
+        if(rl==0){
+            sc=sa<<sb;
+        }else{
+            sc=sa>>sb;
+        }
+        //sc=sa*sb;
+        //cout<<sa<<" "<<sb<<" "<<sc<<endl;
+        
+        //------------------
+        for(int k=0;k<c.size();k++){
+            c[k]=(c[k]>>1)+ (((sc>>k)%2)<<31);
+        }
     }
-    for(int k=0;k<b.size();k++){
-        bitset<32> xb(b[k]);
-        cout<<"b:"<<xb<<endl;
-    }
-    for(int k=0;k<c.size();k++){
-        bitset<32> xc(c[k]);
-        cout<<"c:"<<xc<<endl;
-    }**/
-//------------
-
     return 0;
 }
 Word* Word::isconstTrace(){
@@ -600,8 +629,15 @@ int Word::backAssignIn(size_t n){
 
     }else if(type.compare("^")==0){//c=a^b
 
-    }else if(type.compare("<<")==0){
-
+    }else if(type.compare("<<")==0 ||type.compare(">>")==0){
+        if(n==2)n=0;
+        if(n==1){
+            input[0]->backAssignIn(1);
+            input[1]->backAssignIn(0);
+        }else{  
+            input[0]->backAssignIn(0);
+            input[1]->backAssignIn(0);
+        }
     }
     
 }
@@ -679,6 +715,14 @@ vector<uint> Word::getsimValue(){
     }else if(type.compare("^")==0){//c=a^b
 
     }else if(type.compare("<<")==0){
+        a=input[0]->getsimValue();
+        b=input[1]->getsimValue();
+        simpleShiftsimModule(a,b,simvalues,0);
+
+    }else if(type.compare(">>")==0){
+        a=input[0]->getsimValue();
+        b=input[1]->getsimValue();
+        simpleShiftsimModule(a,b,simvalues,1);
 
     }
     return simvalues;
