@@ -29,11 +29,11 @@ void Lsv_NtkPrintNodes(Abc_Ntk_t* pNtk, vector<string>& cinames, vector<string>&
       }
     }**/
     Abc_NtkForEachCi(pNtk, pObj, i) {
-        printf("fanin Id = %d, name = %s\n", Abc_ObjId(pObj), Abc_ObjName(pObj));
+        // printf("fanin Id = %d, name = %s\n", Abc_ObjId(pObj), Abc_ObjName(pObj));
         cinames.push_back(string(Abc_ObjName(pObj)));
     }
     Abc_NtkForEachCo(pNtk, pObj, i) {
-        printf("fanout Id = %d, name = %s\n", Abc_ObjId(pObj), Abc_ObjName(pObj));
+        // printf("fanout Id = %d, name = %s\n", Abc_ObjId(pObj), Abc_ObjName(pObj));
         conames.push_back(string(Abc_ObjName(pObj)));
     }
 }
@@ -110,6 +110,6 @@ int Lsv_CommandWriteCada(Abc_Frame_t* pAbc, int argc, char** argv) {
 
     // a.incut( );
     // a.detectXor();
-    a.showInfo("test.dot");
+    // a.showInfo("test.dot");
     return 0;
 }

@@ -161,10 +161,10 @@ int Collection::createFaninWords(vector<string> namecis)
     for (int i = 0; i < namecis.size(); i++)
     {
         simpleParsing(namecis[i], pname, count);
-        if (count >= 0)
-            cout << pname << " " << count << endl;
-        else
-            cout << pname;
+        // if (count >= 0)
+        //     cout << pname << " " << count << endl;
+        // else
+        //     cout << pname;
         it = name2word.find(pname);
         if(count==-1)continue;
         if (it == name2word.end())
@@ -173,13 +173,13 @@ int Collection::createFaninWords(vector<string> namecis)
             w->setName(pname);
 
             w->addbit(pis[i],count);
-            cout<<"id "<<pis[i]->nodeid()<<" "<<count<<endl;
+            // cout<<"id "<<pis[i]->nodeid()<<" "<<count<<endl;
             allwords.push_back(w);
             name2word.insert(pair<string,Word*>(pname,w));
         }
         else
         {
-            cout<<"id "<<pis[i]->nodeid()<<" "<<count<<endl;
+            // cout<<"id "<<pis[i]->nodeid()<<" "<<count<<endl;
             it->second->addbit(pis[i],count);
         }
     }
@@ -200,10 +200,10 @@ int Collection::createFanoutWords(vector<string>namecos){
     for (int i = 0; i < namecos.size(); i++)
     {
         simpleParsing(namecos[i], pname, count);
-        if (count >= 0)
-            cout << pname << " " << count << endl;
-        else
-            cout << pname;
+        // if (count >= 0)
+        //     cout << pname << " " << count << endl;
+        // else
+        //     cout << pname;
         it = name2word.find(pname);
         if(count==-1)continue;
         if (it == name2word.end())
@@ -212,13 +212,13 @@ int Collection::createFanoutWords(vector<string>namecos){
             w->setName(pname);
 
             w->addbit(pis[i],count);
-            cout<<"id "<<pis[i]->nodeid()<<" "<<count<<endl;
+            // cout<<"id "<<pis[i]->nodeid()<<" "<<count<<endl;
             allCOwords.push_back(w);
             name2word.insert(pair<string,Word*>(pname,w));
         }
         else
         {
-            cout<<"id "<<pis[i]->nodeid()<<" "<<count<<endl;
+            // cout<<"id "<<pis[i]->nodeid()<<" "<<count<<endl;
             it->second->addbit(pis[i],count);
         }
     }
@@ -418,6 +418,9 @@ int Collection::simAndMatch(){
                 }**/
             }
     }
+
+    delete allwords.back();
+    allwords.pop_back();
 
    return 0;
 
